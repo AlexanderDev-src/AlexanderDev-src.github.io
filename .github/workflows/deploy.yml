@@ -30,6 +30,7 @@ jobs:
           path: dist
 
   deploy:
+    name: Publish portfolio
     needs: build
     runs-on: ubuntu-latest
     environment:

@@ -1,7 +1,3 @@
----
-import { draftNote } from '../data/site';
----
-
 <dialog class="gallery" aria-labelledby="gallery-title">
 	<div class="gallery__scrim" data-gallery-close></div>
 
@@ -11,7 +7,7 @@ import { draftNote } from '../data/site';
 			<h2 class="gallery__title" id="gallery-title"></h2>
 			<p class="gallery__note" hidden>
 				<span class="gallery__dot" aria-hidden="true"></span>
-				{draftNote}
+				<span class="gallery__note-text"></span>
 			</p>
 		</div>
 		<button type="button" class="gallery__close" aria-label="Close" data-gallery-close>✕</button>
@@ -35,6 +31,7 @@ import { draftNote } from '../data/site';
 		year: string;
 		kind: string;
 		draft: boolean;
+		note: string;
 		photos: Photo[];
 	}
 
@@ -50,6 +47,7 @@ import { draftNote } from '../data/site';
 		const meta = dialog.querySelector<HTMLElement>('.gallery__meta')!;
 		const title = dialog.querySelector<HTMLElement>('.gallery__title')!;
 		const note = dialog.querySelector<HTMLElement>('.gallery__note')!;
+		const noteText = dialog.querySelector<HTMLElement>('.gallery__note-text')!;
 		const hint = dialog.querySelector<HTMLElement>('.gallery__hint')!;
 		const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -65,6 +63,7 @@ import { draftNote } from '../data/site';
 			meta.textContent = `${g.kind} · ${g.year}`;
 			title.textContent = g.name;
 			note.hidden = !g.draft;
+			noteText.textContent = g.note;
 
 			const n = g.photos.length;
 			// Two copies of the photos so the strip loops without a gap.

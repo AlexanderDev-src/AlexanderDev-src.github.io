@@ -1,12 +1,13 @@
 ---
-import { draftNote, placeholderPhotos, type Project } from '../data/site';
+import { draftNote as defaultNote, placeholderPhotos, type Project } from '../data/site';
 
 type Props = Project;
 
-const { name, year, kind, description, tags, image, photos, demo, code } = Astro.props;
+const { name, year, kind, description, tags, image, photos, demo, code, draftNote } = Astro.props;
 
-// Without its own photos or image, a project shows placeholders and the draft note.
-const draft = !photos?.length && !image;
+// Without its own photos or image, a project shows placeholders and is a draft unless it says otherwise.
+const draft = Astro.props.draft ?? (!photos?.length && !image);
+const note = draftNote ?? defaultNote;
 const seed = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'project';
 const gallery = photos?.length ? photos : image ? [{ src: image, caption: name }] : placeholderPhotos(seed);
 const cover = gallery.slice(0, 3);
@@ -16,7 +17,7 @@ const cover = gallery.slice(0, 3);
 	<button
 		type="button"
 		class="card__media"
-		data-gallery={JSON.stringify({ name, year, kind, draft, photos: gallery })}
+		data-gallery={JSON.stringify({ name, year, kind, draft, note, photos: gallery })}
 		aria-haspopup="dialog"
 		aria-label={`View photos of ${name}`}
 	>
@@ -40,7 +41,7 @@ const cover = gallery.slice(0, 3);
 			draft && (
 				<p class="card__note">
 					<span class="card__dot" aria-hidden="true" />
-					{draftNote}
+					{note}
 				</p>
 			)
 		}

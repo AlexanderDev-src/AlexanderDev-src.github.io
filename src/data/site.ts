@@ -57,6 +57,10 @@ export interface Project {
 	// Photos for the card collage and the gallery (paths in /public).
 	// Leave empty (and no image) to show placeholder photos with the draftNote below.
 	photos?: ProjectPhoto[];
+	// Show the draft note. Defaults to true when there are no photos and no image.
+	draft?: boolean;
+	// Note for this project while it is a draft. Defaults to draftNote below.
+	draftNote?: string;
 	demo?: string;
 	code?: string;
 }
@@ -77,6 +81,9 @@ export const projects: Project[] = [
 		name: "LexiLog",
 		year: "2026",
 		kind: "Full-stack web app",
+		draft: true,
+		draftNote:
+			"In my config it's using tailscale to connect website only because for my security when I'm on public network <3",
 		description:
 			"A personal IELTS practice app that keeps vocabulary and writing in one place: Anki-style spaced repetition (FSRS) plus a timed writing editor with drafts, feedback, and mistake tracking.",
 		tags: ["Rust", "Svelte", "TypeScript", "SQLite", "Docker"],
@@ -87,15 +94,6 @@ export const projects: Project[] = [
 			{ src: "/projects/lexilog/4.png", caption: "Practice log" },
 		],
 		code: "https://github.com/AlexanderDev-src/lexilog",
-	},
-	{
-		name: "NOT YET",
-		year: "2026",
-		kind: "NOT YET",
-		description: "Let's me cook",
-		tags: [],
-		demo: "#",
-		code: "#",
 	},
 ];
 

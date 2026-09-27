@@ -1,0 +1,98 @@
+---
+import { site, socials } from '../../data/site';
+---
+
+<section id="contact" class="section">
+	<div class="container contact">
+		<p class="eyebrow">05 — Contact</p>
+
+		<h2 class="contact__title">Let's build something together.</h2>
+
+		<a class="contact__email" href={`mailto:${site.email}`}>
+			{site.email}
+			<span aria-hidden="true">→</span>
+		</a>
+
+		<div class="contact__footer">
+			<div class="contact__col">
+				<p class="eyebrow">Socials</p>
+				<ul role="list" class="contact__socials">
+					{
+						socials.map((social) => (
+							<li>
+								<a href={social.href} target="_blank" rel="noopener noreferrer">
+									{social.label} ↗
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div class="contact__col">
+				<p class="eyebrow">Based in</p>
+				<p>{site.location}</p>
+			</div>
+			<div class="contact__col">
+				<p class="eyebrow">Status</p>
+				<p>{site.available ? 'Open to new projects' : 'Currently booked'}</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.contact {
+		display: grid;
+		gap: clamp(2rem, 5vw, 3.5rem);
+	}
+
+	.contact__title {
+		max-width: 14ch;
+		font-size: var(--text-3xl);
+		line-height: 0.95;
+		letter-spacing: -0.045em;
+	}
+
+	.contact__email {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		width: fit-content;
+		max-width: 100%;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid currentColor;
+		font-size: var(--text-xl);
+		font-weight: 500;
+		overflow-wrap: anywhere;
+	}
+
+	.contact__footer {
+		display: grid;
+		gap: 2rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.contact__col {
+		display: grid;
+		align-content: start;
+		gap: 0.75rem;
+	}
+
+	.contact__socials {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+	}
+
+	.contact__socials a:hover {
+		text-decoration: underline;
+		text-underline-offset: 4px;
+	}
+
+	@media (min-width: 768px) {
+		.contact__footer {
+			grid-template-columns: 2fr 1fr 1fr;
+		}
+	}
+</style>

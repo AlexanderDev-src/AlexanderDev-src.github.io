@@ -1,0 +1,80 @@
+---
+import Placeholder from './Placeholder.astro';
+import type { Project } from '../data/site';
+
+type Props = Project;
+
+const { title, description, year, tags, href } = Astro.props;
+---
+
+<a class="card" href={href}>
+	<div class="card__media">
+		<Placeholder label="Project cover" />
+	</div>
+	<div class="card__body">
+		<div class="card__meta eyebrow">
+			<span>{tags.join(' · ')}</span>
+			<span>{year}</span>
+		</div>
+		<h3 class="card__title">
+			{title}
+			<span class="card__arrow" aria-hidden="true">↗</span>
+		</h3>
+		<p class="card__desc">{description}</p>
+	</div>
+</a>
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		padding: 0.75rem;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		transition: border-color 0.2s;
+	}
+
+	.card:hover {
+		border-color: var(--color-text);
+	}
+
+	.card__media {
+		display: grid;
+		flex: 1;
+		min-height: 12rem;
+	}
+
+	.card__body {
+		display: grid;
+		gap: 0.5rem;
+		padding: 0.25rem 0.5rem 0.5rem;
+	}
+
+	.card__meta {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.card__title {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		font-size: var(--text-lg);
+	}
+
+	.card__arrow {
+		transition: transform 0.2s;
+	}
+
+	.card:hover .card__arrow {
+		transform: translate(2px, -2px);
+	}
+
+	.card__desc {
+		font-size: var(--text-sm);
+		color: var(--color-muted);
+	}
+</style>

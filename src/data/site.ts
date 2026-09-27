@@ -10,7 +10,7 @@ export const site = {
 	// IANA time zone for the "Local time" clock in the hero. Use undefined to show the visitor's time.
 	timeZone: "Asia/Bangkok" as string | undefined,
 	intro:
-		"I'm a 2nd year student in University and junior developer. I build full-stack web apps, and I explore data science, machine learning, and deep learning. Right now I'm looking for an internship.",
+		"I'm a 2nd year student in University and junior developer. I build full-stack web apps, and I explore data science, machine learning, and deep learning. Right now I'm focus on studying but still looking for internships",
 };
 
 export const nav = [

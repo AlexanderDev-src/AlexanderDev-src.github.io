@@ -78,6 +78,10 @@ import { draftNote } from '../data/site';
 				btn.addEventListener('click', () => select(sel === k ? null : k));
 
 				const img = document.createElement('img');
+				// Size the frame to the photo's shape once it is known.
+				img.addEventListener('load', () => {
+					if (img.naturalHeight) fig.style.setProperty('--ar', String(img.naturalWidth / img.naturalHeight));
+				});
 				img.src = photo.src;
 				img.alt = photo.caption;
 				img.decoding = 'async';
@@ -305,12 +309,15 @@ import { draftNote } from '../data/site';
 		will-change: transform;
 	}
 
+	/* Width follows each photo's aspect ratio (--ar), so no photo is cropped. */
 	.gallery__track :global(.gallery__item) {
+		--ar: 0.8;
+		--h: min(360px, calc(70vw / var(--ar)));
 		display: flex;
 		flex-direction: column;
 		flex-shrink: 0;
 		gap: 12px;
-		width: 280px;
+		width: calc(var(--h) * var(--ar));
 		pointer-events: auto;
 		transition:
 			width 0.7s var(--ease-out),
@@ -320,7 +327,7 @@ import { draftNote } from '../data/site';
 	.gallery__track :global(.gallery__photo) {
 		display: block;
 		width: 100%;
-		height: 360px;
+		height: var(--h);
 		padding: 0;
 		overflow: hidden;
 		border: 1px solid oklch(1 0 0 / 0.1);
@@ -353,22 +360,18 @@ import { draftNote } from '../data/site';
 		color: var(--color-faint);
 	}
 
+	/* As large as the screen allows, in the photo's own shape. */
 	.gallery__track :global(.is-on) {
-		width: min(560px, 72vw);
+		--h: min(64vh, calc(88vw / var(--ar)));
 	}
 
 	.gallery__track :global(.is-on .gallery__photo) {
-		height: min(640px, 62vh);
 		box-shadow: 0 30px 80px -30px oklch(0 0 0 / 0.8);
 	}
 
 	.gallery__track :global(.is-dim) {
-		width: 200px;
+		--h: min(260px, calc(50vw / var(--ar)));
 		opacity: 0.45;
-	}
-
-	.gallery__track :global(.is-dim .gallery__photo) {
-		height: 260px;
 	}
 
 	.gallery__hint {

@@ -74,6 +74,21 @@ export const placeholderPhotos = (seed: string, count = 6): ProjectPhoto[] =>
 
 export const projects: Project[] = [
 	{
+		name: "LexiLog",
+		year: "2026",
+		kind: "Full-stack web app",
+		description:
+			"A personal IELTS practice app that keeps vocabulary and writing in one place: Anki-style spaced repetition (FSRS) plus a timed writing editor with drafts, feedback, and mistake tracking.",
+		tags: ["Rust", "Svelte", "TypeScript", "SQLite", "Docker"],
+		photos: [
+			{ src: "/projects/lexilog/1.png", caption: "Today" },
+			{ src: "/projects/lexilog/2.png", caption: "Vocabulary deck" },
+			{ src: "/projects/lexilog/3.png", caption: "Writing" },
+			{ src: "/projects/lexilog/4.png", caption: "Practice log" },
+		],
+		code: "https://github.com/AlexanderDev-src/lexilog",
+	},
+	{
 		name: "NOT YET",
 		year: "2026",
 		kind: "NOT YET",

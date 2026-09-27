@@ -4,30 +4,30 @@ import { site } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
-	<div class="container footer__inner">
-		<p>© {year} {site.name}</p>
-		<p>{site.location}</p>
-		<a href="#top">Back to top ↑</a>
-	</div>
+<footer class="container footer">
+	<span>© {year} {site.name}</span>
+	<a href="#top">Back to top ↑</a>
 </footer>
 
 <style>
 	.footer {
-		border-top: 1px solid var(--color-border);
-		font-size: var(--text-sm);
-		color: var(--color-muted);
-	}
-
-	.footer__inner {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
-		gap: 1rem;
-		padding-block: 2rem;
+		gap: 16px;
+		padding-top: 28px;
+		padding-bottom: 40px;
+		border-top: 1px solid var(--hairline-soft);
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: oklch(0.72 0.03 290);
+	}
+
+	.footer a {
+		color: oklch(0.8 0.03 290);
 	}
 
 	.footer a:hover {
-		color: var(--color-text);
+		color: var(--color-amber);
 	}
 </style>

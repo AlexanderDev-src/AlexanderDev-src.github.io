@@ -1,80 +1,166 @@
 ---
-import Placeholder from './Placeholder.astro';
 import type { Project } from '../data/site';
 
 type Props = Project;
 
-const { title, description, year, tags, href } = Astro.props;
+const { name, year, kind, description, tags, image, demo, code } = Astro.props;
 ---
 
-<a class="card" href={href}>
+<article class="card">
 	<div class="card__media">
-		<Placeholder label="Project cover" />
+		{image ? <img src={image} alt={`Screenshot of ${name}`} loading="lazy" /> : <span>project screenshot · 1600×1000</span>}
+		<span class="card__kind">{kind}</span>
 	</div>
+
 	<div class="card__body">
-		<div class="card__meta eyebrow">
-			<span>{tags.join(' · ')}</span>
-			<span>{year}</span>
+		<div class="card__head">
+			<h3 class="card__title">{name}</h3>
+			<span class="card__year">{year}</span>
 		</div>
-		<h3 class="card__title">
-			{title}
-			<span class="card__arrow" aria-hidden="true">↗</span>
-		</h3>
 		<p class="card__desc">{description}</p>
+		<ul role="list" class="card__tags">
+			{tags.map((tag) => <li>{tag}</li>)}
+		</ul>
+		<div class="card__links">
+			{demo && <a href={demo}>Live demo <span class="mono" aria-hidden="true">↗</span></a>}
+			{code && <a class="card__code" href={code}>Code <span class="mono" aria-hidden="true">↗</span></a>}
+		</div>
 	</div>
-</a>
+</article>
 
 <style>
 	.card {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
-		padding: 0.75rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-		transition: border-color 0.2s;
+		gap: 18px;
+		padding: 12px;
+		border-radius: 24px;
+		background: linear-gradient(
+			160deg,
+			oklch(0.16 0.03 290 / 0.75),
+			oklch(0.11 0.02 280 / 0.75)
+		);
+		border: 1px solid var(--hairline);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		transition:
+			transform 0.6s var(--ease-out),
+			border-color 0.6s,
+			box-shadow 0.6s;
 	}
 
 	.card:hover {
-		border-color: var(--color-text);
+		transform: translateY(-8px);
+		border-color: oklch(0.72 0.17 300 / 0.5);
+		box-shadow: 0 20px 60px -20px oklch(0.6 0.2 300 / 0.5);
 	}
 
 	.card__media {
-		display: grid;
-		flex: 1;
-		min-height: 12rem;
+		position: relative;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 12px;
+		aspect-ratio: 16 / 10;
+		padding: 16px;
+		overflow: hidden;
+		border-radius: 16px;
+		background: repeating-linear-gradient(
+			135deg,
+			oklch(0.19 0.03 290) 0 10px,
+			oklch(0.165 0.03 290) 10px 20px
+		);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--color-faint);
+	}
+
+	.card__media img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.card__kind {
+		position: relative;
+		margin-left: auto;
+		padding: 4px 10px;
+		border-radius: 999px;
+		background: oklch(0.08 0.015 285 / 0.7);
+		color: oklch(0.86 0.1 60);
+		white-space: nowrap;
 	}
 
 	.card__body {
-		display: grid;
-		gap: 0.5rem;
-		padding: 0.25rem 0.5rem 0.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 4px 10px 10px;
 	}
 
-	.card__meta {
+	.card__head {
 		display: flex;
+		align-items: baseline;
 		justify-content: space-between;
-		gap: 1rem;
+		gap: 16px;
 	}
 
 	.card__title {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		font-size: var(--text-lg);
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 26px;
+		letter-spacing: -0.02em;
+		line-height: 1.2;
 	}
 
-	.card__arrow {
-		transition: transform 0.2s;
-	}
-
-	.card:hover .card__arrow {
-		transform: translate(2px, -2px);
+	.card__year {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--color-faint);
 	}
 
 	.card__desc {
-		font-size: var(--text-sm);
+		font-size: 15px;
+		line-height: 1.7;
 		color: var(--color-muted);
+	}
+
+	.card__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: oklch(0.86 0.08 300);
+	}
+
+	.card__tags li {
+		padding: 4px 9px;
+		border-radius: 6px;
+		background: oklch(0.72 0.17 300 / 0.14);
+	}
+
+	.card__links {
+		display: flex;
+		gap: 20px;
+		padding-top: 6px;
+		font-size: 14px;
+	}
+
+	.card__links a {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	.card__links .card__code {
+		color: oklch(0.8 0.02 290);
+	}
+
+	.card__links .card__code:hover {
+		color: var(--color-amber);
 	}
 </style>

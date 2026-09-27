@@ -3,111 +3,90 @@ import { site, nav } from '../data/site';
 ---
 
 <header class="header">
-	<div class="container header__inner">
-		<a href="#top" class="header__logo">{site.name}</a>
+	<nav aria-label="Primary" class="container header__inner">
+		<a href="#top" class="header__logo">
+			<span class="header__mark" aria-hidden="true"></span>
+			{site.name.toUpperCase()}
+		</a>
 
-		<nav aria-label="Primary" class="header__nav">
-			<ul role="list">
-				{nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-			</ul>
-		</nav>
-
-		<div class="header__actions">
-			<a href="#contact" class="btn btn--primary">Let's talk</a>
-			<button class="btn btn--ghost header__menu-btn" popovertarget="mobile-menu">Menu</button>
+		<div class="header__links">
+			{nav.map((item) => <a href={item.href}>{item.label}</a>)}
+			<span class="header__status">
+				<span class="header__dot" aria-hidden="true"></span>
+				{site.status}
+			</span>
 		</div>
-	</div>
-
-	<nav id="mobile-menu" class="mobile-menu" popover aria-label="Mobile">
-		<ul role="list">
-			{nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-		</ul>
 	</nav>
 </header>
-
-<script>
-	const menu = document.getElementById('mobile-menu');
-	menu?.querySelectorAll('a').forEach((link) => {
-		link.addEventListener('click', () => menu.hidePopover());
-	});
-</script>
 
 <style>
 	.header {
 		position: sticky;
 		top: 0;
-		z-index: 50;
-		height: var(--header-h);
-		background: color-mix(in srgb, var(--color-bg) 80%, transparent);
-		backdrop-filter: blur(12px);
-		border-bottom: 1px solid var(--color-border);
+		z-index: 10;
+		background: oklch(0.08 0.015 285 / 0.5);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border-bottom: 1px solid var(--hairline-soft);
 	}
 
 	.header__inner {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
-		gap: 1.5rem;
-		height: 100%;
+		gap: 20px;
+		padding-block: 18px;
 	}
 
 	.header__logo {
-		font-weight: 600;
-		letter-spacing: -0.01em;
-	}
-
-	.header__nav ul {
 		display: flex;
-		gap: 2rem;
+		align-items: center;
+		gap: 12px;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 18px;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
 	}
 
-	.header__nav a {
-		font-size: var(--text-sm);
-		color: var(--color-muted);
-		transition: color 0.2s;
+	.header__mark {
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: oklch(0.06 0.01 285);
+		box-shadow:
+			0 0 0 2px var(--color-amber),
+			0 0 16px 2px oklch(0.72 0.17 300 / 0.8);
 	}
 
-	.header__nav a:hover {
-		color: var(--color-text);
-	}
-
-	.header__actions {
+	.header__links {
 		display: flex;
-		gap: 0.5rem;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: clamp(16px, 3vw, 32px);
+		font-size: 15px;
 	}
 
-	.header__menu-btn {
-		display: none;
+	.header__status {
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 12px;
+		border: 1px solid var(--hairline-strong);
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: oklch(0.85 0.02 290);
+		white-space: nowrap;
 	}
 
-	.mobile-menu {
-		inset: var(--header-h) 0 auto 0;
-		width: 100%;
-		max-width: none;
-		margin: 0;
-		padding: 1.5rem var(--gutter) 2rem;
-		background: var(--color-bg);
-		border: 0;
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.mobile-menu ul {
-		display: grid;
-		gap: 1rem;
-	}
-
-	.mobile-menu a {
-		font-size: var(--text-xl);
-		font-weight: 600;
-	}
-
-	@media (max-width: 767px) {
-		.header__nav {
-			display: none;
-		}
-
-		.header__menu-btn {
-			display: inline-flex;
-		}
+	.header__dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--color-amber);
+		box-shadow: 0 0 10px var(--color-amber);
 	}
 </style>

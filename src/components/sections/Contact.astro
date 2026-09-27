@@ -2,97 +2,79 @@
 import { site, socials } from '../../data/site';
 ---
 
-<section id="contact" class="section">
-	<div class="container contact">
-		<p class="eyebrow">05 — Contact</p>
+<section id="contact" class="container contact">
+	<span class="label">04 / CONTACT</span>
 
-		<h2 class="contact__title">Let's build something together.</h2>
+	<h2 class="contact__title">Let's build something <span class="gradient-text">together.</span></h2>
 
-		<a class="contact__email" href={`mailto:${site.email}`}>
-			{site.email}
-			<span aria-hidden="true">→</span>
-		</a>
+	<p class="contact__text">Have an internship, a project, or just a question? Send me a message.</p>
 
-		<div class="contact__footer">
-			<div class="contact__col">
-				<p class="eyebrow">Socials</p>
-				<ul role="list" class="contact__socials">
-					{
-						socials.map((social) => (
-							<li>
-								<a href={social.href} target="_blank" rel="noopener noreferrer">
-									{social.label} ↗
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</div>
-			<div class="contact__col">
-				<p class="eyebrow">Based in</p>
-				<p>{site.location}</p>
-			</div>
-			<div class="contact__col">
-				<p class="eyebrow">Status</p>
-				<p>{site.available ? 'Open to new projects' : 'Currently booked'}</p>
-			</div>
-		</div>
-	</div>
+	<a class="contact__email" href={`mailto:${site.email}`}>{site.email}</a>
+
+	<ul role="list" class="contact__socials">
+		{
+			socials.map((social) => (
+				<li>
+					<a href={social.href} target="_blank" rel="noopener noreferrer">
+						{social.label} ↗
+					</a>
+				</li>
+			))
+		}
+	</ul>
 </section>
 
 <style>
 	.contact {
-		display: grid;
-		gap: clamp(2rem, 5vw, 3.5rem);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 30px;
+		padding-block: clamp(80px, 14vh, 160px);
+		text-align: center;
 	}
 
 	.contact__title {
-		max-width: 14ch;
-		font-size: var(--text-3xl);
+		max-width: 12ch;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(48px, 8vw, 120px);
 		line-height: 0.95;
-		letter-spacing: -0.045em;
+		letter-spacing: -0.04em;
+	}
+
+	.contact__text {
+		max-width: 44ch;
+		font-size: 18px;
+		line-height: 1.7;
+		color: var(--color-muted);
 	}
 
 	.contact__email {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.75rem;
-		width: fit-content;
 		max-width: 100%;
-		padding-bottom: 0.5rem;
-		border-bottom: 1px solid currentColor;
-		font-size: var(--text-xl);
-		font-weight: 500;
+		padding: 18px 30px;
+		border-radius: 999px;
+		border: 1px solid oklch(0.72 0.17 300 / 0.5);
+		background: oklch(0.72 0.17 300 / 0.08);
+		box-shadow: 0 0 40px oklch(0.6 0.2 300 / 0.25);
+		font-family: var(--font-mono);
+		font-size: clamp(18px, 2.2vw, 26px);
 		overflow-wrap: anywhere;
+		transition:
+			box-shadow 0.4s,
+			color 0.2s;
 	}
 
-	.contact__footer {
-		display: grid;
-		gap: 2rem;
-		padding-top: 2rem;
-		border-top: 1px solid var(--color-border);
-	}
-
-	.contact__col {
-		display: grid;
-		align-content: start;
-		gap: 0.75rem;
+	.contact__email:hover {
+		box-shadow: 0 0 70px oklch(0.6 0.2 300 / 0.5);
 	}
 
 	.contact__socials {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem 1.5rem;
-	}
-
-	.contact__socials a:hover {
-		text-decoration: underline;
-		text-underline-offset: 4px;
-	}
-
-	@media (min-width: 768px) {
-		.contact__footer {
-			grid-template-columns: 2fr 1fr 1fr;
-		}
+		justify-content: center;
+		gap: 28px;
+		padding-top: 8px;
+		font-size: 15px;
 	}
 </style>

@@ -1,129 +1,232 @@
 // All page content lives here. Edit this file to fill the layout with your own details.
 
 export const site = {
-	name: 'Your Name',
-	role: 'Designer & Developer',
-	location: 'City, Country',
-	email: 'hello@example.com',
-	available: true,
-	// Each entry renders as its own line in the hero headline.
-	headline: ['I design and build', 'digital experiences', 'people remember.'],
+	name: "Alexander Sanford",
+	role: "Student · Junior Developer",
+	focus: "Web · Data · AI",
+	status: "Studying & building projects · Open to internships",
+	email: "alexander.sanford.contact@pm.me",
+	resume: "#",
+	// IANA time zone for the "Local time" clock in the hero. Use undefined to show the visitor's time.
+	timeZone: "Asia/Bangkok" as string | undefined,
 	intro:
-		'One or two sentences about what you do, who you do it for, and what makes your work different.',
+		"I'm a 2nd year student in University and junior developer. I build full-stack web apps, and I explore data science, machine learning, and deep learning. Right now I'm looking for an internship.",
 };
 
 export const nav = [
-	{ label: 'Work', href: '#work' },
-	{ label: 'About', href: '#about' },
-	{ label: 'Experience', href: '#experience' },
-	{ label: 'Skills', href: '#skills' },
-	{ label: 'Contact', href: '#contact' },
+	{ label: "Projects", href: "#work" },
+	{ label: "Skills", href: "#skills" },
+	{ label: "About", href: "#about" },
+	{ label: "Contact", href: "#contact" },
 ];
 
 export const socials = [
-	{ label: 'GitHub', href: 'https://github.com/' },
-	{ label: 'LinkedIn', href: 'https://linkedin.com/' },
-	{ label: 'Dribbble', href: 'https://dribbble.com/' },
-	{ label: 'X', href: 'https://x.com/' },
+	{ label: "GitHub", href: "https://github.com/AlexanderDev-src" },
+	{
+		label: "LinkedIn",
+		href: "https://www.linkedin.com/in/patcharapolandalexnader",
+	},
+	{ label: "Kaggle", href: "https://kaggle.com/" },
+	{ label: "Résumé (PDF) (Not finished yet)", href: site.resume },
 ];
 
 export const about = {
-	lead: 'A short, bold statement about who you are and how you approach your craft.',
-	paragraphs: [
-		'Paragraph about your background: where you started, what pulled you into this field, and what you focus on today.',
-		'Paragraph about how you work: your process, the kind of teams you enjoy, and what you care about when shipping.',
-	],
+	// Path to your photo in /public (e.g. '/portrait.jpg'). Leave empty to show a placeholder.
+	portrait: "",
+	quote: {
+		before: "I'm curious about how things work — so I ",
+		highlight: "build them",
+		after: " to find out.",
+	},
+	bio: "I'm studying Computer Science and building side projects in my free time. I started with web development, then got curious about data and AI. I enjoy learning new tools, writing clean code, and working with a team. I'm still early in my career, and I want to learn from people who know more than me.",
 };
 
-export const stats = [
-	{ value: '5+', label: 'Years experience' },
-	{ value: '40+', label: 'Projects shipped' },
-	{ value: '12', label: 'Awards & features' },
-];
-
-// Bento grid sizes: 'large' (4x2), 'tall' (2x2), 'wide' (3x1), 'default' (2x1) on a 6-column grid.
-// Rows fill best when each row's spans add up to 6.
-export type ProjectSize = 'large' | 'tall' | 'wide' | 'default';
-
 export interface Project {
-	title: string;
-	description: string;
+	name: string;
 	year: string;
+	kind: string;
+	description: string;
 	tags: string[];
-	href: string;
-	size?: ProjectSize;
+	// Path to a 16:10 screenshot in /public. Leave empty to show a placeholder.
+	image?: string;
+	demo?: string;
+	code?: string;
 }
 
 export const projects: Project[] = [
 	{
-		title: 'Project One',
-		description: 'Flagship project. What it is, the problem it solved, and the result.',
-		year: '2026',
-		tags: ['Web App', 'Design'],
-		href: '#',
-		size: 'large',
+		name: "CampusHub",
+		year: "2026",
+		kind: "Web app",
+		description:
+			"A web app for booking study rooms at my university. Students can log in, pick a time, and get a reminder.",
+		tags: ["Next.js", "Node.js", "PostgreSQL"],
+		demo: "#",
+		code: "#",
 	},
 	{
-		title: 'Project Two',
-		description: 'Short description of the project and your role in it.',
-		year: '2026',
-		tags: ['Mobile'],
-		href: '#',
-		size: 'tall',
+		name: "House Price Predictor",
+		year: "2025",
+		kind: "Machine learning",
+		description:
+			"A machine learning model that guesses house prices from size, location, and age. Includes a simple web page to try it.",
+		tags: ["Python", "scikit-learn", "FastAPI"],
+		demo: "#",
+		code: "#",
 	},
 	{
-		title: 'Project Three',
-		description: 'Short description of the project and your role in it.',
-		year: '2025',
-		tags: ['Branding'],
-		href: '#',
+		name: "Plant Doctor",
+		year: "2025",
+		kind: "Deep learning",
+		description:
+			"A deep learning model that looks at a leaf photo and tells you if the plant is sick.",
+		tags: ["PyTorch", "CNN", "Computer Vision"],
+		demo: "#",
+		code: "#",
 	},
 	{
-		title: 'Project Four',
-		description: 'Short description of the project and your role in it.',
-		year: '2025',
-		tags: ['Open Source'],
-		href: '#',
-	},
-	{
-		title: 'Project Five',
-		description: 'Short description of the project and your role in it.',
-		year: '2024',
-		tags: ['E-commerce'],
-		href: '#',
+		name: "City Air Quality",
+		year: "2024",
+		kind: "Data science",
+		description:
+			"Data analysis of air pollution over 5 years, with charts that show when and where it gets worse.",
+		tags: ["Pandas", "Matplotlib", "Jupyter"],
+		demo: "#",
+		code: "#",
 	},
 ];
 
-export const experience = [
+export const timeline = [
 	{
-		period: '2024 — Now',
-		role: 'Senior Role',
-		company: 'Company Name',
-		summary: 'What you own, what you shipped, and the impact it had.',
+		when: "2023 — Now",
+		title: "B.Sc. Computer Science",
+		place: "Your University",
 	},
 	{
-		period: '2022 — 2024',
-		role: 'Role Title',
-		company: 'Company Name',
-		summary: 'What you own, what you shipped, and the impact it had.',
+		when: "2025",
+		title: "Web Developer (Part-time)",
+		place: "Student Club / Freelance",
 	},
 	{
-		period: '2020 — 2022',
-		role: 'Role Title',
-		company: 'Company Name',
-		summary: 'What you own, what you shipped, and the impact it had.',
-	},
-	{
-		period: '2019 — 2020',
-		role: 'Junior Role',
-		company: 'Company Name',
-		summary: 'What you own, what you shipped, and the impact it had.',
+		when: "2024",
+		title: "Hackathon — Finalist",
+		place: "University Hackathon",
 	},
 ];
 
-export const skills = [
-	{ group: 'Design', items: ['UI Design', 'Prototyping', 'Design Systems', 'Motion'] },
-	{ group: 'Frontend', items: ['TypeScript', 'Astro', 'React', 'CSS', 'GSAP'] },
-	{ group: 'Backend', items: ['Node.js', 'PostgreSQL', 'REST', 'GraphQL'] },
-	{ group: 'Tools', items: ['Figma', 'Git', 'Vite', 'Vercel'] },
+// Tech icons come from Devicon (MIT).
+const DEVICON = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/";
+
+// Black logos that need inverting to show on the dark background.
+export const darkIcons = [
+	"rust",
+	"nextjs",
+	"express",
+	"github",
+	"markdown",
+	"latex",
 ];
+
+export const deviconUrl = (id: string) => `${DEVICON}${id}/${id}-original.svg`;
+
+export interface Skill {
+	id: string;
+	name: string;
+}
+
+export const skills: { group: string; items: Skill[] }[] = [
+	{
+		group: "Languages & Frameworks",
+		items: [
+			{ id: "rust", name: "Rust" },
+			{ id: "java", name: "Java" },
+			{ id: "cplusplus", name: "C++" },
+			{ id: "c", name: "C" },
+			{ id: "python", name: "Python" },
+			{ id: "typescript", name: "TypeScript" },
+			{ id: "javascript", name: "JavaScript" },
+			{ id: "react", name: "React" },
+		],
+	},
+	{
+		group: "Frontend & Markup",
+		items: [
+			{ id: "html5", name: "HTML" },
+			{ id: "css3", name: "CSS" },
+			{ id: "tailwindcss", name: "Tailwind CSS" },
+			{ id: "vitejs", name: "Vite" },
+			{ id: "nextjs", name: "Next.js" },
+			{ id: "markdown", name: "Markdown" },
+			{ id: "latex", name: "LaTeX" },
+		],
+	},
+	{
+		group: "Backend",
+		items: [
+			{ id: "spring", name: "Spring" },
+			{ id: "nodejs", name: "Node.js" },
+			{ id: "express", name: "Express" },
+			{ id: "fastapi", name: "FastAPI" },
+		],
+	},
+	{
+		group: "Database",
+		items: [
+			{ id: "postgresql", name: "PostgreSQL" },
+			{ id: "sqlite", name: "SQLite" },
+			{ id: "mysql", name: "MySQL" },
+			{ id: "mongodb", name: "MongoDB" },
+		],
+	},
+	{
+		group: "Data & AI",
+		items: [
+			{ id: "pandas", name: "Pandas" },
+			{ id: "numpy", name: "NumPy" },
+			{ id: "scikitlearn", name: "scikit-learn" },
+			{ id: "pytorch", name: "PyTorch" },
+			{ id: "tensorflow", name: "TensorFlow" },
+			{ id: "jupyter", name: "Jupyter" },
+		],
+	},
+	{
+		group: "OS & Tools",
+		items: [
+			{ id: "archlinux", name: "Arch Linux" },
+			{ id: "neovim", name: "Neovim" },
+			{ id: "git", name: "Git" },
+			{ id: "github", name: "GitHub" },
+			{ id: "docker", name: "Docker" },
+			{ id: "postman", name: "Postman" },
+			{ id: "vscode", name: "VS Code" },
+			{ id: "figma", name: "Figma" },
+		],
+	},
+];
+
+// Background animation settings.
+export const cosmos = {
+	starDensity: 60, // 10–150
+	nebulaIntensity: 20, // 0–120
+	showBlackHole: true,
+	showOrbitIcons: true,
+	// Devicon ids that spiral into the black hole, with a short label shown if the icon fails to load.
+	orbitIcons: [
+		["rust", "Rs"],
+		["java", "Java"],
+		["cplusplus", "C++"],
+		["c", "C"],
+		["javascript", "JS"],
+		["typescript", "TS"],
+		["python", "Py"],
+		["react", "Re"],
+		["spring", "Sp"],
+		["postgresql", "SQL"],
+		["mongodb", "DB"],
+		["docker", "Dk"],
+		["pytorch", "PT"],
+		["tensorflow", "TF"],
+		["git", "Git"],
+		["neovim", "Nv"],
+	],
+};

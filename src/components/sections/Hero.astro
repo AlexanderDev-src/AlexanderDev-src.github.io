@@ -2,96 +2,171 @@
 import { site } from '../../data/site';
 ---
 
-<section class="hero" aria-label="Introduction">
-	<div class="container hero__inner">
-		<div class="hero__top">
-			<p class="eyebrow hero__status">
-				{site.available && <span class="hero__dot" aria-hidden="true" />}
-				{site.available ? 'Available for work' : site.role}
-			</p>
-			<p class="eyebrow">{site.location}</p>
-		</div>
+<section class="container hero" aria-label="Introduction">
+	<div class="hero__text">
+		<p class="hero__meta">
+			<span>Junior Developer</span>
+			<span class="hero__sep" aria-hidden="true">✦</span>
+			<span>{site.focus}</span>
+			<span class="hero__sep" aria-hidden="true">✦</span>
+			<span>Local time <time id="local-time" data-tz={site.timeZone}>--:--</time></span>
+		</p>
 
-		<h1 class="hero__title">
-			{site.headline.map((line) => <span class="hero__line">{line}</span>)}
-		</h1>
+		<h1 class="hero__title">Hi, I'm <span class="gradient-text">{site.name.split(' ')[0]}.</span></h1>
 
-		<div class="hero__bottom">
-			<p class="hero__intro">{site.intro}</p>
-			<div class="hero__actions">
-				<a class="btn btn--primary" href="#work">View work</a>
-				<a class="btn btn--ghost" href="#contact">Get in touch</a>
-			</div>
+		<p class="hero__intro">{site.intro}</p>
+
+		<div class="hero__actions">
+			<a class="btn btn--primary" href="#work">Explore my work <span class="mono" aria-hidden="true">→</span></a>
+			<a class="btn btn--ghost" href={site.resume}>Download résumé</a>
 		</div>
+	</div>
+
+	<div class="hero__visual">
+		<canvas id="blackhole" class="hero__hole" aria-hidden="true"></canvas>
+		<span class="hero__scroll" aria-hidden="true">Scroll to explore ↓</span>
 	</div>
 </section>
 
+<script>
+	const el = document.getElementById('local-time');
+	if (el) {
+		const format = new Intl.DateTimeFormat('en-GB', {
+			hour: '2-digit',
+			minute: '2-digit',
+			timeZone: el.dataset.tz || undefined,
+		});
+		const tick = () => {
+			el.textContent = format.format(new Date());
+		};
+		tick();
+		setInterval(tick, 30000);
+	}
+</script>
+
 <style>
 	.hero {
-		display: flex;
-		min-height: calc(100svh - var(--header-h));
-	}
-
-	.hero__inner {
+		position: relative;
 		display: grid;
-		grid-template-rows: auto 1fr auto;
-		gap: 2.5rem;
-		padding-block: clamp(2rem, 6vw, 4rem);
-	}
-
-	.hero__top {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-	}
-
-	.hero__status {
-		display: flex;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
 		align-items: center;
-		gap: 0.5rem;
+		gap: 40px;
+		min-height: calc(100vh - var(--header-h));
+		padding-top: clamp(72px, 12vh, 140px);
+		padding-bottom: clamp(64px, 10vh, 120px);
 	}
 
-	.hero__dot {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 50%;
-		background: currentColor;
+	.hero__text {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		gap: 36px;
+	}
+
+	.hero__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: oklch(0.8 0.03 290);
+	}
+
+	.hero__meta > span {
+		white-space: nowrap;
+	}
+
+	.hero__sep {
+		opacity: 0.5;
 	}
 
 	.hero__title {
-		align-self: end;
-		font-size: var(--text-display);
-		line-height: 0.95;
-		letter-spacing: -0.045em;
-	}
-
-	.hero__line {
-		display: block;
-	}
-
-	.hero__bottom {
-		display: grid;
-		gap: 2rem;
-		padding-top: 2rem;
-		border-top: 1px solid var(--color-border);
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(52px, 8.4vw, 128px);
+		line-height: 0.92;
+		letter-spacing: -0.035em;
 	}
 
 	.hero__intro {
-		max-width: 44ch;
-		font-size: var(--text-lg);
-		color: var(--color-muted);
+		max-width: 38ch;
+		font-size: clamp(17px, 1.5vw, 20px);
+		line-height: 1.7;
+		color: var(--color-text-soft);
 	}
 
 	.hero__actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.75rem;
+		gap: 12px;
 	}
 
-	@media (min-width: 768px) {
-		.hero__bottom {
-			grid-template-columns: 1fr auto;
-			align-items: end;
-		}
+	.btn {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 15px 24px;
+		border-radius: 999px;
+		font-size: 15px;
+	}
+
+	.btn--primary {
+		font-weight: 500;
+		background: oklch(0.92 0.05 60);
+		color: oklch(0.14 0.03 285);
+		box-shadow: 0 0 32px oklch(0.82 0.14 60 / 0.35);
+		transition:
+			box-shadow 0.3s,
+			transform 0.3s;
+	}
+
+	.btn--primary:hover {
+		color: oklch(0.14 0.03 285);
+		box-shadow: 0 0 48px oklch(0.82 0.14 60 / 0.6);
+		transform: translateY(-2px);
+	}
+
+	.btn--ghost {
+		border: 1px solid oklch(1 0 0 / 0.18);
+		background: oklch(1 0 0 / 0.03);
+		transition:
+			border-color 0.3s,
+			color 0.2s;
+	}
+
+	.btn--ghost:hover {
+		border-color: oklch(0.72 0.17 300 / 0.8);
+	}
+
+	.hero__visual {
+		position: relative;
+		z-index: 1;
+		justify-self: center;
+		width: 100%;
+		max-width: 680px;
+		aspect-ratio: 1 / 1;
+	}
+
+	.hero__hole {
+		position: absolute;
+		inset: -15%;
+		width: 130%;
+		max-width: none;
+		height: 130%;
+		pointer-events: none;
+	}
+
+	.hero__scroll {
+		position: absolute;
+		right: 4%;
+		bottom: 6%;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: oklch(0.72 0.03 290);
 	}
 </style>

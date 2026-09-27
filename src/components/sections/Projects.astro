@@ -4,80 +4,42 @@ import ProjectCard from '../ProjectCard.astro';
 import { projects } from '../../data/site';
 ---
 
-<section id="work" class="section">
-	<div class="container">
-		<div class="projects__header">
-			<SectionHeading index="01" title="Selected work">
-				<p>A few projects I'm proud of. Swap in your own story here.</p>
-			</SectionHeading>
-			<a class="btn btn--ghost" href="#">All projects →</a>
-		</div>
+<section id="work" class="container projects">
+	<div class="projects__header">
+		<SectionHeading label="01 / PROJECTS" title="Things I've built" />
+		<span class="projects__note">Web · Machine Learning · Deep Learning · Data</span>
+	</div>
 
-		<ul role="list" class="projects__grid">
-			{
-				projects.map((project) => (
-					<li class={`projects__item projects__item--${project.size ?? 'default'}`}>
-						<ProjectCard {...project} />
-					</li>
-				))
-			}
-		</ul>
+	<div class="projects__grid">
+		{projects.map((project) => <ProjectCard {...project} />)}
 	</div>
 </section>
 
 <style>
+	.projects {
+		display: flex;
+		flex-direction: column;
+		gap: 44px;
+		padding-block: clamp(48px, 8vh, 96px);
+	}
+
 	.projects__header {
 		display: flex;
 		flex-wrap: wrap;
-		align-items: end;
+		align-items: flex-end;
 		justify-content: space-between;
-		gap: 1.5rem;
-		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+		gap: 24px;
+	}
+
+	.projects__note {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: oklch(0.76 0.03 290);
 	}
 
 	.projects__grid {
 		display: grid;
-		gap: 1rem;
-	}
-
-	.projects__item {
-		display: grid;
-	}
-
-	@media (min-width: 640px) {
-		.projects__grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			grid-auto-rows: minmax(18rem, auto);
-			grid-auto-flow: dense;
-		}
-
-		.projects__item--large,
-		.projects__item--wide {
-			grid-column: span 2;
-		}
-
-		.projects__item--large,
-		.projects__item--tall {
-			grid-row: span 2;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.projects__grid {
-			grid-template-columns: repeat(6, minmax(0, 1fr));
-		}
-
-		.projects__item--default,
-		.projects__item--tall {
-			grid-column: span 2;
-		}
-
-		.projects__item--wide {
-			grid-column: span 3;
-		}
-
-		.projects__item--large {
-			grid-column: span 4;
-		}
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+		gap: clamp(20px, 2.5vw, 32px);
 	}
 </style>

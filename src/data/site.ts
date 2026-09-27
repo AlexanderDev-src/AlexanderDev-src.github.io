@@ -55,42 +55,11 @@ export interface Project {
 
 export const projects: Project[] = [
 	{
-		name: "CampusHub",
+		name: "NOT YET",
 		year: "2026",
-		kind: "Web app",
-		description:
-			"A web app for booking study rooms at my university. Students can log in, pick a time, and get a reminder.",
-		tags: ["Next.js", "Node.js", "PostgreSQL"],
-		demo: "#",
-		code: "#",
-	},
-	{
-		name: "House Price Predictor",
-		year: "2025",
-		kind: "Machine learning",
-		description:
-			"A machine learning model that guesses house prices from size, location, and age. Includes a simple web page to try it.",
-		tags: ["Python", "scikit-learn", "FastAPI"],
-		demo: "#",
-		code: "#",
-	},
-	{
-		name: "Plant Doctor",
-		year: "2025",
-		kind: "Deep learning",
-		description:
-			"A deep learning model that looks at a leaf photo and tells you if the plant is sick.",
-		tags: ["PyTorch", "CNN", "Computer Vision"],
-		demo: "#",
-		code: "#",
-	},
-	{
-		name: "City Air Quality",
-		year: "2024",
-		kind: "Data science",
-		description:
-			"Data analysis of air pollution over 5 years, with charts that show when and where it gets worse.",
-		tags: ["Pandas", "Matplotlib", "Jupyter"],
+		kind: "NOT YET",
+		description: "Let's me cook",
+		tags: [],
 		demo: "#",
 		code: "#",
 	},
@@ -98,19 +67,9 @@ export const projects: Project[] = [
 
 export const timeline = [
 	{
-		when: "2023 — Now",
+		when: "2025 — Now",
 		title: "B.Sc. Computer Science",
-		place: "Your University",
-	},
-	{
-		when: "2025",
-		title: "Web Developer (Part-time)",
-		place: "Student Club / Freelance",
-	},
-	{
-		when: "2024",
-		title: "Hackathon — Finalist",
-		place: "University Hackathon",
+		place: "Khon Kean University",
 	},
 ];
 

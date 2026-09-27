@@ -67,11 +67,13 @@ import { site, about, timeline } from '../../data/site';
 		gap: 28px;
 	}
 
+	/* The outer ring sits 30px outside; the margin keeps it on screen when the gutter is smaller. */
 	.about__portrait {
 		position: relative;
 		flex-shrink: 0;
 		width: 220px;
 		height: 220px;
+		margin-left: max(0px, 30px - var(--gutter));
 	}
 
 	.about__ring {

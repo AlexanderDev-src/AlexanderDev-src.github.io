@@ -86,7 +86,8 @@ import { site } from '../../data/site';
 	.hero__title {
 		font-family: var(--font-display);
 		font-weight: 800;
-		font-size: clamp(52px, 8.4vw, 128px);
+		/* "Alexander." is about 8.1em wide; the cap keeps it on small screens. */
+		font-size: min(clamp(52px, 8.4vw, 128px), (100vw - 2 * var(--gutter)) / 8.4);
 		line-height: 0.92;
 		letter-spacing: -0.035em;
 	}

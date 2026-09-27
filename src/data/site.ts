@@ -41,6 +41,11 @@ export const about = {
 	bio: "I'm studying Computer Science and building side projects in my free time. I started with web development, then got curious about data and AI. I enjoy learning new tools, writing clean code, and working with a team. I'm still early in my career, and I want to learn from people who know more than me.",
 };
 
+export interface ProjectPhoto {
+	src: string;
+	caption: string;
+}
+
 export interface Project {
 	name: string;
 	year: string;
@@ -49,9 +54,23 @@ export interface Project {
 	tags: string[];
 	// Path to a 16:10 screenshot in /public. Leave empty to show a placeholder.
 	image?: string;
+	// Photos for the card collage and the gallery (paths in /public).
+	// Leave empty (and no image) to show placeholder photos with the draftNote below.
+	photos?: ProjectPhoto[];
 	demo?: string;
 	code?: string;
 }
+
+// Shown on projects that still use placeholder photos.
+export const draftNote =
+	"Not finished yet. I'm still working on this project. The photos are placeholders only.";
+
+// Stand-in photos from picsum.photos until a project has its own.
+export const placeholderPhotos = (seed: string, count = 6): ProjectPhoto[] =>
+	Array.from({ length: count }, (_, i) => ({
+		src: `https://picsum.photos/seed/${seed}-${i}/900/1100`,
+		caption: "Placeholder image",
+	}));
 
 export const projects: Project[] = [
 	{

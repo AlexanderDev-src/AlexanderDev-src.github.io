@@ -1,0 +1,395 @@
+---
+import { draftNote } from '../data/site';
+---
+
+<dialog class="gallery" aria-labelledby="gallery-title">
+	<div class="gallery__scrim" data-gallery-close></div>
+
+	<header class="gallery__head">
+		<div class="gallery__titles">
+			<span class="label gallery__meta"></span>
+			<h2 class="gallery__title" id="gallery-title"></h2>
+			<p class="gallery__note" hidden>
+				<span class="gallery__dot" aria-hidden="true"></span>
+				{draftNote}
+			</p>
+		</div>
+		<button type="button" class="gallery__close" aria-label="Close" data-gallery-close>✕</button>
+	</header>
+
+	<div class="gallery__view">
+		<div class="gallery__track"></div>
+	</div>
+
+	<p class="gallery__hint"></p>
+</dialog>
+
+<script>
+	interface Photo {
+		src: string;
+		caption: string;
+	}
+
+	interface Gallery {
+		name: string;
+		year: string;
+		kind: string;
+		draft: boolean;
+		photos: Photo[];
+	}
+
+	// Strip speed while nothing is selected, in px per second.
+	const SPEED = 24;
+
+	const dialog = document.querySelector<HTMLDialogElement>('.gallery');
+	if (dialog) setupGallery(dialog);
+
+	function setupGallery(dialog: HTMLDialogElement) {
+		const view = dialog.querySelector<HTMLElement>('.gallery__view')!;
+		const track = dialog.querySelector<HTMLElement>('.gallery__track')!;
+		const meta = dialog.querySelector<HTMLElement>('.gallery__meta')!;
+		const title = dialog.querySelector<HTMLElement>('.gallery__title')!;
+		const note = dialog.querySelector<HTMLElement>('.gallery__note')!;
+		const hint = dialog.querySelector<HTMLElement>('.gallery__hint')!;
+		const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+		let items: HTMLElement[] = [];
+		let sel: number | null = null;
+		let off: number | null = null;
+		let last = 0;
+		let raf = 0;
+
+		const pad = (n: number) => String(n).padStart(2, '0');
+
+		function render(g: Gallery) {
+			meta.textContent = `${g.kind} · ${g.year}`;
+			title.textContent = g.name;
+			note.hidden = !g.draft;
+
+			const n = g.photos.length;
+			// Two copies of the photos so the strip loops without a gap.
+			items = [...g.photos, ...g.photos].map((photo, k) => {
+				const fig = document.createElement('figure');
+				fig.className = 'gallery__item';
+
+				const btn = document.createElement('button');
+				btn.type = 'button';
+				btn.className = 'gallery__photo';
+				btn.addEventListener('click', () => select(sel === k ? null : k));
+
+				const img = document.createElement('img');
+				img.src = photo.src;
+				img.alt = photo.caption;
+				img.decoding = 'async';
+				btn.append(img);
+
+				const caption = document.createElement('span');
+				caption.textContent = photo.caption;
+				const num = document.createElement('span');
+				num.className = 'gallery__num';
+				num.textContent = `${pad((k % n) + 1)} / ${pad(n)}`;
+				const figcaption = document.createElement('figcaption');
+				figcaption.append(caption, num);
+
+				// The second copy is only there for the loop.
+				if (k >= n) {
+					fig.setAttribute('aria-hidden', 'true');
+					btn.tabIndex = -1;
+				}
+
+				fig.append(btn, figcaption);
+				return fig;
+			});
+			track.replaceChildren(...items);
+		}
+
+		function select(k: number | null) {
+			sel = k;
+			items.forEach((fig, i) => {
+				fig.classList.toggle('is-on', i === k);
+				fig.classList.toggle('is-dim', k !== null && i !== k);
+				fig.querySelector('button')!.setAttribute('aria-pressed', String(i === k));
+			});
+			hint.textContent =
+				k === null ? 'Click a photo to enlarge · Esc to close' : 'Click again to shrink · Esc to go back';
+		}
+
+		// Drift the strip, or glide the selected photo to the centre.
+		function frame(now: number) {
+			const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
+			last = now;
+			const half = track.scrollWidth / 2;
+			if (half) {
+				if (off === null) off = -half;
+				if (sel === null) {
+					if (!still.matches) off += SPEED * dt;
+					while (off > 0) off -= half;
+					while (off < -half) off += half;
+				} else {
+					const el = items[sel];
+					const target = view.clientWidth / 2 - (el.offsetLeft + el.offsetWidth / 2);
+					off += (target - off) * (still.matches ? 1 : 1 - Math.pow(0.92, dt * 60));
+				}
+				track.style.transform = `translate3d(${off}px, 0, 0)`;
+			}
+			raf = requestAnimationFrame(frame);
+		}
+
+		let opener: HTMLElement | null = null;
+
+		function open(g: Gallery, from: HTMLElement) {
+			opener = from;
+			render(g);
+			select(null);
+			off = null;
+			last = 0;
+			dialog.showModal();
+			document.body.style.overflow = 'hidden';
+			cancelAnimationFrame(raf);
+			raf = requestAnimationFrame(frame);
+		}
+
+		dialog.addEventListener('close', () => {
+			cancelAnimationFrame(raf);
+			document.body.style.overflow = '';
+			track.replaceChildren();
+			items = [];
+			opener?.focus();
+		});
+
+		// Esc shrinks a selected photo first, then closes.
+		dialog.addEventListener('cancel', (e) => {
+			if (sel !== null) {
+				e.preventDefault();
+				select(null);
+			}
+		});
+
+		dialog.addEventListener('click', (e) => {
+			if ((e.target as Element).closest('[data-gallery-close]')) dialog.close();
+		});
+
+		document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((btn) => {
+			btn.addEventListener('click', () => open(JSON.parse(btn.dataset.gallery!), btn));
+		});
+	}
+</script>
+
+<style>
+	.gallery {
+		width: 100%;
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: oklch(0.06 0.015 285 / 0.88);
+		backdrop-filter: blur(18px);
+		-webkit-backdrop-filter: blur(18px);
+		color: var(--color-text);
+		overflow: hidden;
+	}
+
+	.gallery[open] {
+		display: flex;
+		flex-direction: column;
+		animation: gallery-in 0.4s var(--ease-out);
+	}
+
+	.gallery::backdrop {
+		background: transparent;
+	}
+
+	@keyframes gallery-in {
+		from {
+			opacity: 0;
+		}
+	}
+
+	.gallery__scrim {
+		position: absolute;
+		inset: 0;
+	}
+
+	.gallery__head {
+		position: relative;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 20px;
+		width: 100%;
+		max-width: var(--container);
+		margin: 0 auto;
+		padding: 28px var(--gutter) 0;
+	}
+
+	.gallery__titles {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.gallery__meta {
+		text-transform: uppercase;
+	}
+
+	.gallery__title {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(28px, 3.4vw, 44px);
+		letter-spacing: -0.02em;
+		line-height: 1.05;
+	}
+
+	.gallery__note {
+		display: flex;
+		gap: 10px;
+		max-width: 60ch;
+		padding-top: 4px;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		line-height: 1.6;
+		color: oklch(0.86 0.1 60);
+	}
+
+	.gallery__note[hidden] {
+		display: none;
+	}
+
+	.gallery__dot {
+		flex-shrink: 0;
+		width: 7px;
+		height: 7px;
+		margin-top: 0.55em;
+		border-radius: 50%;
+		background: var(--color-amber);
+		box-shadow: 0 0 10px var(--color-amber);
+	}
+
+	.gallery__close {
+		flex-shrink: 0;
+		width: 48px;
+		height: 48px;
+		border-radius: 50%;
+		border: 1px solid oklch(1 0 0 / 0.18);
+		background: oklch(1 0 0 / 0.04);
+		color: var(--color-text);
+		font-size: 20px;
+		cursor: pointer;
+		transition: border-color 0.3s;
+	}
+
+	.gallery__close:hover {
+		border-color: oklch(0.72 0.17 300 / 0.8);
+	}
+
+	/* clip, not hidden: focusing a photo must not scroll the strip. */
+	.gallery__view {
+		position: relative;
+		flex: 1;
+		display: flex;
+		align-items: center;
+		overflow: hidden;
+		overflow: clip;
+		pointer-events: none;
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+
+	/* Padding is half the gap, so half the scroll width is exactly one set of photos. */
+	.gallery__track {
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: 20px;
+		padding: 0 10px;
+		will-change: transform;
+	}
+
+	.gallery__track :global(.gallery__item) {
+		display: flex;
+		flex-direction: column;
+		flex-shrink: 0;
+		gap: 12px;
+		width: 280px;
+		pointer-events: auto;
+		transition:
+			width 0.7s var(--ease-out),
+			opacity 0.5s;
+	}
+
+	.gallery__track :global(.gallery__photo) {
+		display: block;
+		width: 100%;
+		height: 360px;
+		padding: 0;
+		overflow: hidden;
+		border: 1px solid oklch(1 0 0 / 0.1);
+		border-radius: 20px;
+		background: oklch(0.17 0.03 290);
+		cursor: pointer;
+		transition:
+			height 0.7s var(--ease-out),
+			box-shadow 0.7s;
+	}
+
+	.gallery__track :global(.gallery__photo img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.gallery__track :global(figcaption) {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+		overflow: hidden;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: oklch(0.82 0.02 290);
+		white-space: nowrap;
+	}
+
+	.gallery__track :global(.gallery__num) {
+		color: oklch(0.7 0.03 290);
+	}
+
+	.gallery__track :global(.is-on) {
+		width: min(560px, 72vw);
+	}
+
+	.gallery__track :global(.is-on .gallery__photo) {
+		height: min(640px, 62vh);
+		box-shadow: 0 30px 90px -20px oklch(0.6 0.2 300 / 0.6);
+	}
+
+	.gallery__track :global(.is-dim) {
+		width: 200px;
+		opacity: 0.45;
+	}
+
+	.gallery__track :global(.is-dim .gallery__photo) {
+		height: 260px;
+	}
+
+	.gallery__hint {
+		position: relative;
+		padding: 0 20px 28px;
+		text-align: center;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: oklch(0.76 0.03 290);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.gallery[open] {
+			animation: none;
+		}
+
+		.gallery__track :global(.gallery__item),
+		.gallery__track :global(.gallery__photo) {
+			transition: none;
+		}
+	}
+</style>

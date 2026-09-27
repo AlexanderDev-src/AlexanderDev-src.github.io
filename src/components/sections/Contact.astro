@@ -9,7 +9,10 @@ import { site, socials } from '../../data/site';
 
 	<p class="contact__text">Have an internship, a project, or just a question? Send me a message.</p>
 
-	<a class="contact__email" href={`mailto:${site.email}`}>{site.email}</a>
+	{/* Line breaks only after "." or "@", never in the middle of a word. */}
+	<a class="contact__email" href={`mailto:${site.email}`}>
+		{site.email.split(/(?<=[.@])/).map((part) => <Fragment>{part}<wbr /></Fragment>)}
+	</a>
 
 	<ul role="list" class="contact__socials">
 		{
@@ -38,7 +41,8 @@ import { site, socials } from '../../data/site';
 		max-width: 12ch;
 		font-family: var(--font-display);
 		font-weight: 800;
-		font-size: clamp(48px, 8vw, 120px);
+		/* "something" is about 8.1em wide; the cap keeps it on small screens. */
+		font-size: min(clamp(48px, 8vw, 120px), (100vw - 2 * var(--gutter)) / 8.4);
 		line-height: 0.95;
 		letter-spacing: -0.04em;
 	}
@@ -60,6 +64,7 @@ import { site, socials } from '../../data/site';
 		font-family: var(--font-mono);
 		font-size: clamp(18px, 2.2vw, 26px);
 		overflow-wrap: anywhere;
+		text-wrap: balance;
 		transition:
 			box-shadow 0.4s,
 			color 0.2s;

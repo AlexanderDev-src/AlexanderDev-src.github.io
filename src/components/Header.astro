@@ -13,7 +13,7 @@ import { site, nav } from '../data/site';
 			{nav.map((item) => <a href={item.href}>{item.label}</a>)}
 			<span class="header__status">
 				<span class="header__dot" aria-hidden="true"></span>
-				{site.status}
+				{site.status.replaceAll(' · ', '\u00a0· ')}
 			</span>
 		</div>
 	</nav>
@@ -68,23 +68,28 @@ import { site, nav } from '../data/site';
 		font-size: 15px;
 	}
 
+	/* The text may wrap on small screens. A 16px radius is half the one-line height,
+	   so it still reads as a pill on one line and as a rounded box on two. */
 	.header__status {
 		display: flex;
-		flex-shrink: 0;
-		align-items: center;
+		align-items: flex-start;
 		gap: 8px;
+		min-width: 0;
 		padding: 6px 12px;
 		border: 1px solid var(--hairline-strong);
-		border-radius: 999px;
+		border-radius: 16px;
 		font-family: var(--font-mono);
 		font-size: 12px;
+		line-height: 1.5;
 		color: oklch(0.85 0.02 290);
-		white-space: nowrap;
+		text-wrap: balance;
 	}
 
 	.header__dot {
+		flex-shrink: 0;
 		width: 7px;
 		height: 7px;
+		margin-top: calc((1.5em - 7px) / 2);
 		border-radius: 50%;
 		background: var(--color-amber);
 		box-shadow: 0 0 10px var(--color-amber);

@@ -13,15 +13,18 @@ import { skills, darkIcons, deviconUrl } from '../../data/site';
 					<h3 class="skills__title">{group.group}</h3>
 					<ul role="list" class="skills__list">
 						{group.items.map((item) => (
-							<li class="skills__tile" title={item.name}>
-								<img
-									src={deviconUrl(item.id)}
-									alt={item.name}
-									width="30"
-									height="30"
-									loading="lazy"
-									class:list={{ 'is-dark': darkIcons.includes(item.id) }}
-								/>
+							<li class="skills__item">
+								<span class="skills__tile">
+									<img
+										src={deviconUrl(item.id)}
+										alt=""
+										width="30"
+										height="30"
+										loading="lazy"
+										class:list={{ 'is-dark': darkIcons.includes(item.id) }}
+									/>
+								</span>
+								{item.name}
 							</li>
 						))}
 					</ul>
@@ -65,10 +68,23 @@ import { skills, darkIcons, deviconUrl } from '../../data/site';
 		color: oklch(0.92 0.04 60);
 	}
 
+	/* Each tool is its icon with the name under it, so it reads without hovering. */
 	.skills__list {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+		gap: 16px 8px;
+	}
+
+	.skills__item {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 10px;
+		flex-direction: column;
+		align-items: center;
+		gap: 8px;
+		font-size: 12px;
+		font-weight: 500;
+		line-height: 1.3;
+		text-align: center;
+		color: var(--color-muted);
 	}
 
 	.skills__tile {
@@ -80,16 +96,6 @@ import { skills, darkIcons, deviconUrl } from '../../data/site';
 		border-radius: 16px;
 		border: 1px solid oklch(1 0 0 / 0.1);
 		background: oklch(1 0 0 / 0.04);
-		transition:
-			transform 0.35s var(--ease-out),
-			border-color 0.35s,
-			box-shadow 0.35s;
-	}
-
-	.skills__tile:hover {
-		transform: translateY(-4px) scale(1.06);
-		border-color: oklch(0.72 0.17 300 / 0.6);
-		box-shadow: 0 0 24px oklch(0.6 0.2 300 / 0.4);
 	}
 
 	.skills__tile img {

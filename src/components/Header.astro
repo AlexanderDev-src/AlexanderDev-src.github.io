@@ -66,6 +66,7 @@ import { site, nav } from '../data/site';
 		align-items: center;
 		gap: clamp(16px, 3vw, 32px);
 		font-size: 15px;
+		font-weight: 500;
 	}
 
 	/* The text may wrap on small screens. A 16px radius is half the one-line height,
@@ -78,10 +79,10 @@ import { site, nav } from '../data/site';
 		padding: 6px 12px;
 		border: 1px solid var(--hairline-strong);
 		border-radius: 16px;
-		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: 13px;
+		font-weight: 500;
 		line-height: 1.5;
-		color: oklch(0.85 0.02 290);
+		color: var(--color-muted);
 		text-wrap: balance;
 	}
 
@@ -92,6 +93,5 @@ import { site, nav } from '../data/site';
 		margin-top: calc((1.5em - 7px) / 2);
 		border-radius: 50%;
 		background: var(--color-amber);
-		box-shadow: 0 0 10px var(--color-amber);
 	}
 </style>

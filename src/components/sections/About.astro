@@ -100,7 +100,6 @@ import { site, about, timeline } from '../../data/site';
 		margin-left: -3px;
 		border-radius: 50%;
 		background: var(--color-amber);
-		box-shadow: 0 0 12px var(--color-amber);
 	}
 
 	.about__photo {
@@ -115,9 +114,9 @@ import { site, about, timeline } from '../../data/site';
 			oklch(0.19 0.03 290) 0 10px,
 			oklch(0.165 0.03 290) 10px 20px
 		);
-		box-shadow: 0 0 60px oklch(0.6 0.2 300 / 0.45);
-		font-family: var(--font-mono);
-		font-size: 12px;
+		box-shadow: 0 0 40px oklch(0.6 0.2 300 / 0.25);
+		font-size: 14px;
+		font-weight: 500;
 		color: var(--color-faint);
 	}
 
@@ -141,14 +140,14 @@ import { site, about, timeline } from '../../data/site';
 
 	.about__role {
 		font-size: 15px;
-		color: oklch(0.8 0.015 290);
+		color: var(--color-muted);
 	}
 
 	.about__quote {
 		font-family: var(--font-display);
 		font-weight: 600;
-		font-size: clamp(30px, 3.4vw, 46px);
-		line-height: 1.12;
+		font-size: clamp(28px, 3.2vw, 42px);
+		line-height: 1.15;
 		letter-spacing: -0.025em;
 	}
 
@@ -170,11 +169,10 @@ import { site, about, timeline } from '../../data/site';
 	}
 
 	.about__timeline-title {
-		font-family: var(--font-mono);
-		font-size: 12px;
-		font-weight: 400;
-		letter-spacing: 0.14em;
-		color: oklch(0.76 0.03 290);
+		font-size: 13px;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		color: var(--color-muted);
 	}
 
 	.timeline__row {
@@ -191,12 +189,12 @@ import { site, about, timeline } from '../../data/site';
 		height: 9px;
 		border-radius: 50%;
 		background: var(--color-magenta);
-		box-shadow: 0 0 12px var(--color-magenta);
 	}
 
 	.timeline__when {
-		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: 14px;
+		font-weight: 500;
+		font-variant-numeric: tabular-nums;
 		color: var(--color-muted-2);
 	}
 
@@ -212,7 +210,7 @@ import { site, about, timeline } from '../../data/site';
 	}
 
 	.timeline__place {
-		font-size: 14px;
-		color: oklch(0.78 0.015 290);
+		font-size: 15px;
+		color: var(--color-muted);
 	}
 </style>

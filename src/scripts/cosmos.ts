@@ -240,7 +240,7 @@ export function startCosmos() {
 				x.drawImage(o.icon.bitmap, -size / 2, -size / 2, size, size);
 			} else {
 				x.fillStyle = '#fff';
-				x.font = `600 ${size * 0.38}px 'Space Mono', monospace`;
+				x.font = `700 ${size * 0.38}px 'Syne', sans-serif`;
 				x.textAlign = 'center';
 				x.textBaseline = 'middle';
 				x.fillText(o.icon.label, 0, 0);

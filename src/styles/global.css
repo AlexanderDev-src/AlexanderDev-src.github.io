@@ -11,7 +11,7 @@
 	--color-amber: oklch(0.82 0.14 60);
 	--color-violet: oklch(0.72 0.17 300);
 	--color-magenta: oklch(0.78 0.15 320);
-	--color-glow: oklch(0.6 0.2 300);
+	--color-amber-soft: oklch(0.92 0.05 60);
 
 	--hairline: oklch(1 0 0 / 0.08);
 	--hairline-soft: oklch(1 0 0 / 0.06);
@@ -26,7 +26,11 @@
 
 	--font-display: 'Syne', sans-serif;
 	--font-sans: 'Manrope', system-ui, sans-serif;
-	--font-mono: 'Space Mono', ui-monospace, monospace;
+	/* System monospace: only for the arrow glyphs, so no web font is loaded for it. */
+	--font-mono: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+	--radius-sm: 8px;
+	--radius-md: 14px;
 
 	--container: 1280px;
 	--gutter: clamp(20px, 4vw, 48px);
@@ -63,7 +67,7 @@ body {
 	background: var(--color-bg);
 	color: var(--color-text);
 	font-family: var(--font-sans);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 }
@@ -129,10 +133,10 @@ p {
 
 /* Shared UI */
 .label {
-	font-family: var(--font-mono);
-	font-size: 12px;
-	font-weight: 400;
-	letter-spacing: 0.14em;
+	font-family: var(--font-sans);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
 	color: var(--color-amber);
 }
 
@@ -155,7 +159,7 @@ p {
 	padding: 0.5rem 1rem;
 	background: var(--color-text);
 	color: var(--color-bg);
-	border-radius: 999px;
+	border-radius: var(--radius-sm);
 	transform: translateY(-200%);
 }
 

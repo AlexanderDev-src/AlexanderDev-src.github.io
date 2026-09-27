@@ -59,27 +59,7 @@ const cover = gallery.slice(0, 3);
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 18px;
-		padding: 12px;
-		border-radius: 24px;
-		background: linear-gradient(
-			160deg,
-			oklch(0.16 0.03 290 / 0.75),
-			oklch(0.11 0.02 280 / 0.75)
-		);
-		border: 1px solid var(--hairline);
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
-		transition:
-			transform 0.6s var(--ease-out),
-			border-color 0.6s,
-			box-shadow 0.6s;
-	}
-
-	.card:hover {
-		transform: translateY(-8px);
-		border-color: oklch(0.72 0.17 300 / 0.5);
-		box-shadow: 0 20px 60px -20px oklch(0.6 0.2 300 / 0.5);
+		gap: 20px;
 	}
 
 	.card__media {
@@ -89,12 +69,17 @@ const cover = gallery.slice(0, 3);
 		aspect-ratio: 16 / 10;
 		padding: 0;
 		overflow: hidden;
-		border: 0;
-		border-radius: 16px;
+		border: 1px solid var(--hairline-strong);
+		border-radius: var(--radius-md);
 		background: oklch(0.17 0.03 290);
 		color: inherit;
-		font-family: var(--font-mono);
+		font-weight: 600;
 		cursor: pointer;
+		transition: border-color 0.3s;
+	}
+
+	.card__media:hover {
+		border-color: oklch(0.82 0.14 60 / 0.6);
 	}
 
 	.card__collage {
@@ -103,7 +88,7 @@ const cover = gallery.slice(0, 3);
 		display: grid;
 		grid-template-columns: 2fr 1fr;
 		grid-template-rows: 1fr 1fr;
-		gap: 6px;
+		gap: 3px;
 	}
 
 	.card__collage img {
@@ -135,7 +120,7 @@ const cover = gallery.slice(0, 3);
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, oklch(0.2 0.08 300 / 0.25), oklch(0.08 0.015 285 / 0.9));
+		background: oklch(0.08 0.015 285 / 0.45);
 		opacity: 0;
 		transition: opacity 0.5s;
 	}
@@ -154,12 +139,12 @@ const cover = gallery.slice(0, 3);
 	}
 
 	.card__kind {
-		top: 10px;
-		left: 10px;
+		top: 12px;
+		left: 12px;
 		padding: 4px 10px;
 		background: oklch(0.08 0.015 285 / 0.8);
-		color: oklch(0.86 0.1 60);
-		font-size: 11px;
+		color: var(--color-amber-soft);
+		font-size: 12px;
 	}
 
 	.card__view {
@@ -168,14 +153,13 @@ const cover = gallery.slice(0, 3);
 		padding: 7px 14px;
 		background: oklch(0.95 0.01 290 / 0.92);
 		color: oklch(0.14 0.03 285);
-		font-size: 12px;
+		font-size: 13px;
 	}
 
 	.card__body {
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
-		padding: 4px 10px 10px;
 	}
 
 	.card__head {
@@ -188,20 +172,22 @@ const cover = gallery.slice(0, 3);
 	.card__title {
 		font-family: var(--font-display);
 		font-weight: 700;
-		font-size: 26px;
+		font-size: 28px;
 		letter-spacing: -0.02em;
 		line-height: 1.15;
 	}
 
 	.card__year {
 		flex-shrink: 0;
-		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: 14px;
+		font-weight: 500;
+		font-variant-numeric: tabular-nums;
 		color: var(--color-faint);
 	}
 
 	.card__desc {
-		font-size: 15px;
+		max-width: 60ch;
+		font-size: 16px;
 		line-height: 1.7;
 		color: var(--color-muted);
 	}
@@ -209,14 +195,10 @@ const cover = gallery.slice(0, 3);
 	.card__note {
 		display: flex;
 		gap: 10px;
-		padding: 10px 12px;
-		border: 1px dashed oklch(0.82 0.14 60 / 0.35);
-		border-radius: 16px;
-		background: oklch(0.82 0.14 60 / 0.06);
-		font-family: var(--font-mono);
-		font-size: 12px;
+		max-width: 60ch;
+		font-size: 14px;
 		line-height: 1.6;
-		color: oklch(0.86 0.1 60);
+		color: var(--color-amber-soft);
 	}
 
 	.card__dot {
@@ -226,35 +208,49 @@ const cover = gallery.slice(0, 3);
 		margin-top: 0.55em;
 		border-radius: 50%;
 		background: var(--color-amber);
-		box-shadow: 0 0 10px var(--color-amber);
 	}
 
 	.card__tags {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 6px;
-		font-family: var(--font-mono);
-		font-size: 11px;
-		color: oklch(0.86 0.08 300);
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--color-muted);
 	}
 
 	.card__tags li {
-		padding: 4px 9px;
-		border-radius: 6px;
-		background: oklch(0.72 0.17 300 / 0.14);
+		padding: 3px 9px;
+		border: 1px solid var(--hairline-strong);
+		border-radius: var(--radius-sm);
+	}
+
+	.card__tags:empty {
+		display: none;
 	}
 
 	.card__links {
 		display: flex;
-		gap: 20px;
-		padding-top: 6px;
-		font-size: 14px;
+		gap: 24px;
+		padding-top: 4px;
+		font-size: 15px;
+		font-weight: 500;
 	}
 
 	.card__links a {
-		display: flex;
-		align-items: center;
-		gap: 6px;
+		text-decoration: underline;
+		text-decoration-color: oklch(1 0 0 / 0.3);
+		text-underline-offset: 0.3em;
+	}
+
+	.card__links a:hover {
+		text-decoration-color: currentColor;
+	}
+
+	/* inline-block keeps the underline off the arrow. */
+	.card__links .mono {
+		display: inline-block;
+		margin-left: 4px;
 	}
 
 	.card__links .card__code {

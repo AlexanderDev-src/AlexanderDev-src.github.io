@@ -231,7 +231,7 @@ import { draftNote } from '../data/site';
 	}
 
 	.gallery__meta {
-		text-transform: uppercase;
+		color: var(--color-amber-soft);
 	}
 
 	.gallery__title {
@@ -247,10 +247,9 @@ import { draftNote } from '../data/site';
 		gap: 10px;
 		max-width: 60ch;
 		padding-top: 4px;
-		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: 14px;
 		line-height: 1.6;
-		color: oklch(0.86 0.1 60);
+		color: var(--color-amber-soft);
 	}
 
 	.gallery__note[hidden] {
@@ -264,7 +263,6 @@ import { draftNote } from '../data/site';
 		margin-top: 0.55em;
 		border-radius: 50%;
 		background: var(--color-amber);
-		box-shadow: 0 0 10px var(--color-amber);
 	}
 
 	.gallery__close {
@@ -281,7 +279,7 @@ import { draftNote } from '../data/site';
 	}
 
 	.gallery__close:hover {
-		border-color: oklch(0.72 0.17 300 / 0.8);
+		border-color: var(--color-amber);
 	}
 
 	/* clip, not hidden: focusing a photo must not scroll the strip. */
@@ -326,7 +324,7 @@ import { draftNote } from '../data/site';
 		padding: 0;
 		overflow: hidden;
 		border: 1px solid oklch(1 0 0 / 0.1);
-		border-radius: 20px;
+		border-radius: var(--radius-md);
 		background: oklch(0.17 0.03 290);
 		cursor: pointer;
 		transition:
@@ -345,14 +343,14 @@ import { draftNote } from '../data/site';
 		justify-content: space-between;
 		gap: 12px;
 		overflow: hidden;
-		font-family: var(--font-mono);
-		font-size: 12px;
-		color: oklch(0.82 0.02 290);
+		font-size: 13px;
+		color: var(--color-muted);
 		white-space: nowrap;
 	}
 
 	.gallery__track :global(.gallery__num) {
-		color: oklch(0.7 0.03 290);
+		font-variant-numeric: tabular-nums;
+		color: var(--color-faint);
 	}
 
 	.gallery__track :global(.is-on) {
@@ -361,7 +359,7 @@ import { draftNote } from '../data/site';
 
 	.gallery__track :global(.is-on .gallery__photo) {
 		height: min(640px, 62vh);
-		box-shadow: 0 30px 90px -20px oklch(0.6 0.2 300 / 0.6);
+		box-shadow: 0 30px 80px -30px oklch(0 0 0 / 0.8);
 	}
 
 	.gallery__track :global(.is-dim) {
@@ -377,9 +375,8 @@ import { draftNote } from '../data/site';
 		position: relative;
 		padding: 0 20px 28px;
 		text-align: center;
-		font-family: var(--font-mono);
-		font-size: 12px;
-		color: oklch(0.76 0.03 290);
+		font-size: 13px;
+		color: var(--color-faint);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

@@ -41,8 +41,9 @@ import { site, socials } from '../../data/site';
 		max-width: 12ch;
 		font-family: var(--font-display);
 		font-weight: 800;
-		/* "something" is about 8.1em wide; the cap keeps it on small screens. */
-		font-size: min(clamp(48px, 8vw, 120px), (100vw - 2 * var(--gutter)) / 8.4);
+		/* "something" is about 8.1em wide; the cap keeps it on small screens.
+		   Smaller than the hero title so the page has one loudest line. */
+		font-size: min(clamp(44px, 6.4vw, 96px), (100vw - 2 * var(--gutter)) / 8.4);
 		line-height: 0.95;
 		letter-spacing: -0.04em;
 	}
@@ -56,30 +57,42 @@ import { site, socials } from '../../data/site';
 
 	.contact__email {
 		max-width: 100%;
-		padding: 18px 30px;
-		border-radius: 999px;
-		border: 1px solid oklch(0.72 0.17 300 / 0.5);
-		background: oklch(0.72 0.17 300 / 0.08);
-		box-shadow: 0 0 40px oklch(0.6 0.2 300 / 0.25);
-		font-family: var(--font-mono);
-		font-size: clamp(18px, 2.2vw, 26px);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: clamp(22px, 3vw, 38px);
+		letter-spacing: -0.01em;
+		color: var(--color-amber-soft);
+		text-decoration: underline;
+		text-decoration-color: oklch(0.82 0.14 60 / 0.4);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 0.3em;
 		overflow-wrap: anywhere;
 		text-wrap: balance;
 		transition:
-			box-shadow 0.4s,
-			color 0.2s;
+			color 0.2s,
+			text-decoration-color 0.2s;
 	}
 
 	.contact__email:hover {
-		box-shadow: 0 0 70px oklch(0.6 0.2 300 / 0.5);
+		text-decoration-color: currentColor;
 	}
 
 	.contact__socials {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		gap: 28px;
+		gap: 12px 28px;
 		padding-top: 8px;
 		font-size: 15px;
+		font-weight: 500;
+		color: var(--color-muted);
+	}
+
+	.contact__socials a {
+		color: inherit;
+	}
+
+	.contact__socials a:hover {
+		color: var(--color-amber);
 	}
 </style>

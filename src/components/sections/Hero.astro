@@ -67,12 +67,10 @@ import { site } from '../../data/site';
 	.hero__meta {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 14px;
-		font-family: var(--font-mono);
-		font-size: 12px;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: oklch(0.8 0.03 290);
+		gap: 10px 14px;
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--color-muted);
 	}
 
 	.hero__meta > span {
@@ -80,7 +78,12 @@ import { site } from '../../data/site';
 	}
 
 	.hero__sep {
-		opacity: 0.5;
+		color: var(--color-amber);
+		opacity: 0.7;
+	}
+
+	.hero__meta time {
+		font-variant-numeric: tabular-nums;
 	}
 
 	.hero__title {
@@ -93,9 +96,9 @@ import { site } from '../../data/site';
 	}
 
 	.hero__intro {
-		max-width: 38ch;
+		max-width: 40ch;
 		font-size: clamp(17px, 1.5vw, 20px);
-		line-height: 1.7;
+		line-height: 1.65;
 		color: var(--color-text-soft);
 	}
 
@@ -108,38 +111,34 @@ import { site } from '../../data/site';
 	.btn {
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		padding: 15px 24px;
-		border-radius: 999px;
+		gap: 10px;
+		padding: 14px 22px;
+		border: 1px solid transparent;
+		border-radius: var(--radius-sm);
 		font-size: 15px;
-	}
-
-	.btn--primary {
-		font-weight: 500;
-		background: oklch(0.92 0.05 60);
-		color: oklch(0.14 0.03 285);
-		box-shadow: 0 0 32px oklch(0.82 0.14 60 / 0.35);
+		font-weight: 600;
 		transition:
-			box-shadow 0.3s,
-			transform 0.3s;
-	}
-
-	.btn--primary:hover {
-		color: oklch(0.14 0.03 285);
-		box-shadow: 0 0 48px oklch(0.82 0.14 60 / 0.6);
-		transform: translateY(-2px);
-	}
-
-	.btn--ghost {
-		border: 1px solid oklch(1 0 0 / 0.18);
-		background: oklch(1 0 0 / 0.03);
-		transition:
-			border-color 0.3s,
+			background-color 0.2s,
+			border-color 0.2s,
 			color 0.2s;
 	}
 
+	.btn--primary {
+		background: var(--color-amber-soft);
+		color: oklch(0.14 0.03 285);
+	}
+
+	.btn--primary:hover {
+		background: var(--color-amber);
+		color: oklch(0.14 0.03 285);
+	}
+
+	.btn--ghost {
+		border-color: oklch(1 0 0 / 0.2);
+	}
+
 	.btn--ghost:hover {
-		border-color: oklch(0.72 0.17 300 / 0.8);
+		border-color: var(--color-amber);
 	}
 
 	.hero__visual {
@@ -164,10 +163,8 @@ import { site } from '../../data/site';
 		position: absolute;
 		right: 4%;
 		bottom: 6%;
-		font-family: var(--font-mono);
-		font-size: 11px;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: oklch(0.72 0.03 290);
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--color-faint);
 	}
 </style>

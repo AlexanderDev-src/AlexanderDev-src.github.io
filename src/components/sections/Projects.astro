@@ -2,23 +2,98 @@
 import SectionHeading from '../SectionHeading.astro';
 import ProjectCard from '../ProjectCard.astro';
 import ProjectGallery from '../ProjectGallery.astro';
-import { projects, projectTime } from '../../data/site';
+import { projectFilterKeys, projectFilters, projects, projectTime } from '../../data/site';
 
 const sorted = [...projects].sort((a, b) => projectTime(b.year) - projectTime(a.year));
+
+// Filter buttons with how many projects each one matches. Filters that match nothing are left out.
+const filterGroup = (names: string[]) =>
+	names
+		.map((name) => ({
+			name,
+			key: name.toLowerCase(),
+			count: projects.filter((project) => projectFilterKeys(project).includes(name.toLowerCase())).length,
+		}))
+		.filter((filter) => filter.count > 0);
+const filters = [filterGroup(projectFilters.topics), filterGroup(projectFilters.languages)].filter(
+	(group) => group.length > 0,
+);
 ---
 
 <section id="work" class="container projects">
 	<div class="projects__header">
 		<SectionHeading label="01 / PROJECTS" title="Things I've built" />
 		<span class="projects__note">Web · Machine Learning · Deep Learning · Data</span>
+		{
+			filters.length > 0 && (
+				<div class="projects__filters" role="group" aria-label="Filter projects">
+					<button type="button" class="projects__filter" data-filter="" aria-pressed="true">
+						All <span class="projects__count">{projects.length}</span>
+					</button>
+					{filters.map((group) => (
+						<>
+							<span class="projects__divider" aria-hidden="true" />
+							{group.map((filter) => (
+								<button type="button" class="projects__filter" data-filter={filter.key} aria-pressed="false">
+									{filter.name} <span class="projects__count">{filter.count}</span>
+								</button>
+							))}
+						</>
+					))}
+				</div>
+			)
+		}
+		<p class="projects__status sr-only" aria-live="polite"></p>
 	</div>
 
 	<div class="projects__grid">
 		{sorted.map((project) => <ProjectCard {...project} />)}
 	</div>
 
+	<!-- Without JavaScript the filters can't work, and every project already shows. -->
+	<noscript>
+		<style is:inline>
+			.projects__filters {
+				display: none !important;
+			}
+		</style>
+	</noscript>
+
 	<ProjectGallery />
 </section>
+
+<script>
+	const filterButtons = document.querySelectorAll<HTMLButtonElement>('.projects__filter');
+	const cards = document.querySelectorAll<HTMLElement>('.projects__grid .card');
+	const status = document.querySelector('.projects__status');
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+	filterButtons.forEach((chosen) => {
+		chosen.addEventListener('click', () => {
+			const filter = chosen.dataset.filter ?? '';
+			const wasShowing = new Set([...cards].filter((card) => !card.hidden));
+
+			filterButtons.forEach((other) => other.setAttribute('aria-pressed', String(other === chosen)));
+
+			let matches = 0;
+			cards.forEach((card) => {
+				const match = !filter || (card.dataset.filters ?? '').split('|').includes(filter);
+				card.hidden = !match;
+				if (!match) return;
+				matches++;
+
+				if (!reduceMotion.matches && !wasShowing.has(card)) {
+					card.animate([{ opacity: 0, transform: 'translateY(16px)' }, {}], {
+						duration: 500,
+						easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
+					});
+				}
+			});
+
+			if (status) status.textContent = `Showing ${matches} ${matches === 1 ? 'project' : 'projects'}`;
+		});
+	});
+</script>
 
 <style>
 	.projects {
@@ -42,6 +117,68 @@ const sorted = [...projects].sort((a, b) => projectTime(b.year) - projectTime(a.
 		font-weight: 500;
 		color: var(--color-faint);
 		text-wrap: balance;
+	}
+
+	/* Full width, so the filters sit on their own line under the heading. */
+	.projects__filters {
+		display: flex;
+		flex-basis: 100%;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.projects__filter {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 7px;
+		padding: 8px 16px;
+		border: 1px solid var(--hairline-strong);
+		border-radius: 999px;
+		background: none;
+		color: var(--color-muted);
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+		transition:
+			border-color 0.2s,
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	.projects__filter:hover {
+		border-color: oklch(0.82 0.14 60 / 0.6);
+		color: var(--color-text);
+	}
+
+	.projects__filter[aria-pressed='true'] {
+		border-color: oklch(0.82 0.14 60 / 0.6);
+		background: oklch(0.82 0.14 60 / 0.12);
+		color: var(--color-amber-soft);
+	}
+
+	.projects__count {
+		font-size: 12px;
+		font-variant-numeric: tabular-nums;
+		color: var(--color-faint);
+	}
+
+	.projects__filter[aria-pressed='true'] .projects__count {
+		color: var(--color-amber);
+	}
+
+	.projects__divider {
+		width: 1px;
+		height: 18px;
+		margin-inline: 6px;
+		background: var(--hairline-strong);
+	}
+
+	/* On phones the buttons wrap, and a divider would be left hanging at the end of a line. */
+	@media (max-width: 600px) {
+		.projects__divider {
+			display: none;
+		}
 	}
 
 	.projects__grid {

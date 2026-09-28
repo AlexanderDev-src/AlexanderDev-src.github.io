@@ -1,9 +1,10 @@
 ---
 import { draftNote as defaultNote, placeholderPhotos, projectFilterKeys, type Project } from '../data/site';
 
-type Props = Project;
+// hidden: start collapsed behind the "Show more" button.
+type Props = Project & { hidden?: boolean };
 
-const { name, year, kind, description, tags, image, photos, demo, code, draftNote } = Astro.props;
+const { name, year, kind, description, tags, image, photos, demo, code, draftNote, hidden } = Astro.props;
 
 // Without its own photos or image, a project shows placeholders and is a draft unless it says otherwise.
 const draft = Astro.props.draft ?? (!photos?.length && !image);
@@ -13,7 +14,7 @@ const gallery = photos?.length ? photos : image ? [{ src: image, caption: name }
 const cover = gallery.slice(0, 3);
 ---
 
-<article class="card" data-filters={projectFilterKeys(Astro.props).join('|')}>
+<article class="card" data-filters={projectFilterKeys(Astro.props).join('|')} hidden={hidden}>
 	<button
 		type="button"
 		class="card__media"

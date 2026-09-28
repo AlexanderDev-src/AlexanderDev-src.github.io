@@ -118,6 +118,10 @@ export const projectFilters = {
 	languages: ["Rust", "Java", "C++", "C", "Python", "TypeScript", "JavaScript"],
 };
 
+// How many projects show at first. The rest open with the floating "Show more" button.
+// The limit applies to whatever the filter shows, so a filter with more matches gets the button too.
+export const projectsShown = 4;
+
 // Everything a project can be filtered by, in lower case.
 export const projectFilterKeys = (project: Project) =>
 	[...(project.topics ?? []), ...project.tags].map((key) => key.toLowerCase());

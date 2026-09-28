@@ -15,9 +15,86 @@ import { site, nav } from '../data/site';
 				<span class="header__dot" aria-hidden="true"></span>
 				{site.status.replaceAll(' · ', '\u00a0· ')}
 			</span>
+			<span class="header__indicator" aria-hidden="true"></span>
 		</div>
 	</nav>
 </header>
+
+<script>
+	// A bar under the nav link for the section being read. It slides over to a link as soon as it
+	// is clicked and stays there for the whole jump (scripts/jump.ts), instead of ticking past
+	// every section on the way.
+	const links = [...document.querySelectorAll<HTMLAnchorElement>('.header__links a[href^="#"]')];
+	const sections = links.map((link) => document.getElementById(link.hash.slice(1)));
+	const bar = document.querySelector<HTMLElement>('.header__indicator');
+	let active: HTMLAnchorElement | null = null;
+	let jumping = false;
+
+	function place() {
+		if (!bar || !active) return;
+		bar.style.width = `${active.offsetWidth}px`;
+		bar.style.transform = `translate(${active.offsetLeft}px, ${active.offsetTop + active.offsetHeight + 6}px)`;
+	}
+
+	function select(link: HTMLAnchorElement | null) {
+		if (link === active) return;
+		active?.removeAttribute('aria-current');
+		link?.setAttribute('aria-current', 'true');
+		const appearing = !active;
+		active = link;
+		if (!bar) return;
+
+		// Coming out of hiding, the bar fades in where it belongs instead of sliding in from the left.
+		if (appearing) bar.style.transition = 'none';
+		place();
+		if (appearing) {
+			void bar.offsetWidth;
+			bar.style.transition = '';
+		}
+		bar.toggleAttribute('data-visible', Boolean(link));
+	}
+
+	function spy() {
+		if (jumping) return;
+		const line = window.innerHeight * 0.4;
+		let current: HTMLAnchorElement | null = null;
+		sections.forEach((section, i) => {
+			if (section && section.getBoundingClientRect().top <= line) current = links[i];
+		});
+		// The last section may be too short to ever reach the line.
+		const end = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+		select(end ? links[links.length - 1] : current);
+	}
+
+	let queued = false;
+	window.addEventListener(
+		'scroll',
+		() => {
+			if (queued) return;
+			queued = true;
+			requestAnimationFrame(() => {
+				queued = false;
+				spy();
+			});
+		},
+		{ passive: true },
+	);
+
+	window.addEventListener('jump:start', (event) => {
+		jumping = true;
+		const hash = (event as CustomEvent<string>).detail;
+		select(links.find((link) => link.hash === hash) ?? null);
+	});
+
+	window.addEventListener('jump:end', () => {
+		jumping = false;
+		spy();
+	});
+
+	const list = document.querySelector('.header__links');
+	if (list) new ResizeObserver(place).observe(list);
+	spy();
+</script>
 
 <style>
 	.header {
@@ -61,12 +138,43 @@ import { site, nav } from '../data/site';
 	}
 
 	.header__links {
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: clamp(16px, 3vw, 32px);
 		font-size: 15px;
 		font-weight: 500;
+	}
+
+	.header__links a[aria-current] {
+		color: var(--color-amber-soft);
+	}
+
+	.header__indicator {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 0;
+		height: 2px;
+		border-radius: 2px;
+		background: linear-gradient(90deg, var(--color-amber), var(--color-magenta), var(--color-violet));
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			transform 0.5s var(--ease-out),
+			width 0.5s var(--ease-out),
+			opacity 0.3s;
+	}
+
+	.header__indicator[data-visible] {
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.header__indicator {
+			transition: opacity 0.3s;
+		}
 	}
 
 	/* The text may wrap on small screens. A 16px radius is half the one-line height,

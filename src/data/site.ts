@@ -76,10 +76,36 @@ export const placeholderPhotos = (seed: string, count = 6): ProjectPhoto[] =>
 		caption: "Placeholder image",
 	}));
 
+const MONTHS = [
+	"jan",
+	"feb",
+	"mar",
+	"apr",
+	"may",
+	"jun",
+	"jul",
+	"aug",
+	"sep",
+	"oct",
+	"nov",
+	"dec",
+];
+
+// Turns a project date like "Sep 2026" or "2026" into a number for sorting. A year alone counts as January.
+export const projectTime = (date: string) => {
+	const match = date.match(/(?:([a-z]{3})[a-z]*\s+)?(\d{4})/i);
+	if (!match) return 0;
+	const month = match[1]
+		? Math.max(MONTHS.indexOf(match[1].toLowerCase()), 0)
+		: 0;
+	return Number(match[2]) * 12 + month;
+};
+
+// Shown newest first by date, so the order here does not matter.
 export const projects: Project[] = [
 	{
 		name: "LexiLog",
-		year: "2026",
+		year: "Sep 2026",
 		kind: "Full-stack web app",
 		draft: true,
 		draftNote:

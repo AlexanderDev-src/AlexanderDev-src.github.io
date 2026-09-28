@@ -2,7 +2,9 @@
 import SectionHeading from '../SectionHeading.astro';
 import ProjectCard from '../ProjectCard.astro';
 import ProjectGallery from '../ProjectGallery.astro';
-import { projects } from '../../data/site';
+import { projects, projectTime } from '../../data/site';
+
+const sorted = [...projects].sort((a, b) => projectTime(b.year) - projectTime(a.year));
 ---
 
 <section id="work" class="container projects">
@@ -12,7 +14,7 @@ import { projects } from '../../data/site';
 	</div>
 
 	<div class="projects__grid">
-		{projects.map((project) => <ProjectCard {...project} />)}
+		{sorted.map((project) => <ProjectCard {...project} />)}
 	</div>
 
 	<ProjectGallery />

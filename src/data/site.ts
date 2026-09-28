@@ -172,6 +172,19 @@ export const projects: Project[] = [
 		],
 		code: "https://github.com/Ax-47/java_project",
 	},
+	{
+		name: "Nabla",
+		year: "Sep 2026",
+		kind: "Neural Network",
+		topics: ["Neural Network", "Deep Learning"],
+		draft: true,
+		draftNote: "NOT YET",
+		description:
+			"∇ : A tiny reverse-mode autodiff engine and neural network library in C++23. Header-only, zero dependencies, 98% on MNIST.",
+		tags: ["C++", "Neural Network", "DL"],
+		photos: [],
+		code: "https://github.com/AlexanderDev-src/nabla",
+	},
 ];
 
 export const timeline = [

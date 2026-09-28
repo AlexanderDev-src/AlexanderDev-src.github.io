@@ -2,14 +2,9 @@
 import SectionHeading from '../SectionHeading.astro';
 import ProjectCard from '../ProjectCard.astro';
 import ProjectGallery from '../ProjectGallery.astro';
-import { projects, projectsShown, projectTime } from '../../data/site';
+import { projects, projectTime } from '../../data/site';
 
 const sorted = [...projects].sort((a, b) => projectTime(b.year) - projectTime(a.year));
-const shown = sorted.slice(0, projectsShown);
-const extra = sorted.slice(projectsShown);
-
-// Astro's dev toolbar sits at the bottom center during `astro dev` and would cover the button.
-const lift = import.meta.env.DEV;
 ---
 
 <section id="work" class="container projects">
@@ -19,81 +14,11 @@ const lift = import.meta.env.DEV;
 	</div>
 
 	<div class="projects__grid">
-		{shown.map((project) => <ProjectCard {...project} />)}
-		{
-			extra.length > 0 && (
-				<div class="projects__extra" id="projects-extra" hidden>
-					{extra.map((project) => <ProjectCard {...project} />)}
-				</div>
-			)
-		}
+		{sorted.map((project) => <ProjectCard {...project} />)}
 	</div>
-
-	{
-		extra.length > 0 && (
-			<button
-				type="button"
-				class:list={['projects__more', { 'projects__more--lift': lift }]}
-				aria-expanded="false"
-				aria-controls="projects-extra"
-				data-more={`Show ${extra.length} more`}
-				data-less="Show fewer"
-			>
-				<span class="projects__more-text">Show {extra.length} more</span>
-				<span class="projects__more-arrow mono" aria-hidden="true">↓</span>
-			</button>
-		)
-	}
-
-	<!-- Without JavaScript the button can't work, so show every project instead. -->
-	<noscript>
-		<style is:inline>
-			.projects__extra[hidden] {
-				display: contents !important;
-			}
-
-			.projects__more {
-				display: none !important;
-			}
-		</style>
-	</noscript>
 
 	<ProjectGallery />
 </section>
-
-<script>
-	const button = document.querySelector<HTMLButtonElement>('.projects__more');
-	const extra = document.getElementById('projects-extra');
-	const grid = document.querySelector<HTMLElement>('.projects__grid');
-
-	if (button && extra && grid) {
-		const text = button.querySelector('.projects__more-text')!;
-		const arrow = button.querySelector('.projects__more-arrow')!;
-
-		// The button floats on screen only while the project cards fill the middle of the view.
-		new IntersectionObserver(([entry]) => button.toggleAttribute('data-visible', entry.isIntersecting), {
-			rootMargin: '-20% 0px -35% 0px',
-		}).observe(grid);
-
-		button.addEventListener('click', () => {
-			const open = button.getAttribute('aria-expanded') !== 'true';
-			const firstExtra = extra.firstElementChild as HTMLElement;
-			const readingExtra = !open && firstExtra.getBoundingClientRect().top < window.innerHeight;
-
-			extra.hidden = !open;
-			button.setAttribute('aria-expanded', String(open));
-			text.textContent = (open ? button.dataset.less : button.dataset.more) ?? '';
-			arrow.textContent = open ? '↑' : '↓';
-
-			// Closing while down among the extra cards would leave the reader wherever the
-			// shorter page now ends. Bring them back to the end of the list instead.
-			if (readingExtra) {
-				const end = grid.getBoundingClientRect().bottom + window.scrollY;
-				window.scrollTo({ top: end - window.innerHeight + 160, behavior: 'instant' });
-			}
-		});
-	}
-</script>
 
 <style>
 	.projects {
@@ -123,112 +48,5 @@ const lift = import.meta.env.DEV;
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
 		gap: clamp(40px, 4vw, 56px) clamp(24px, 3vw, 40px);
-	}
-
-	/* The extra cards join the grid directly, as if they were never wrapped. */
-	.projects__extra {
-		display: contents;
-	}
-
-	.projects__extra[hidden] {
-		display: none;
-	}
-
-	.projects__extra:not([hidden]) > :global(.card) {
-		animation: projects-reveal 0.5s var(--ease-out) both;
-	}
-
-	@keyframes projects-reveal {
-		from {
-			opacity: 0;
-			transform: translateY(16px);
-		}
-	}
-
-	/* Floating pill with a slowly turning gradient frame in the site's amber → violet colors. */
-	@property --more-angle {
-		syntax: '<angle>';
-		inherits: false;
-		initial-value: 0deg;
-	}
-
-	.projects__more {
-		position: fixed;
-		left: 50%;
-		bottom: calc(24px + env(safe-area-inset-bottom));
-		z-index: 20;
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		padding: 12px 22px;
-		border: 1px solid transparent;
-		border-radius: 999px;
-		background:
-			linear-gradient(oklch(0.1 0.02 285 / 0.82), oklch(0.1 0.02 285 / 0.82)) padding-box,
-			conic-gradient(
-					from var(--more-angle),
-					oklch(0.82 0.14 60),
-					oklch(0.78 0.15 320),
-					oklch(0.72 0.17 300),
-					oklch(0.72 0.17 300 / 0.15),
-					oklch(0.82 0.14 60)
-				)
-				border-box;
-		backdrop-filter: blur(14px);
-		-webkit-backdrop-filter: blur(14px);
-		box-shadow:
-			0 12px 32px oklch(0 0 0 / 0.5),
-			0 0 22px oklch(0.72 0.17 300 / 0.22);
-		color: var(--color-text);
-		font-size: 14px;
-		font-weight: 600;
-		white-space: nowrap;
-		cursor: pointer;
-		opacity: 0;
-		visibility: hidden;
-		transform: translate(-50%, 16px) scale(0.96);
-		transition:
-			opacity 0.3s var(--ease-out),
-			transform 0.3s var(--ease-out),
-			visibility 0s linear 0.3s,
-			color 0.2s,
-			box-shadow 0.2s;
-		animation: more-turn 6s linear infinite;
-	}
-
-	.projects__more--lift {
-		bottom: calc(96px + env(safe-area-inset-bottom));
-	}
-
-	.projects__more[data-visible] {
-		opacity: 1;
-		visibility: visible;
-		transform: translate(-50%, 0) scale(1);
-		transition-delay: 0s;
-	}
-
-	.projects__more:hover {
-		color: var(--color-amber-soft);
-		box-shadow:
-			0 12px 32px oklch(0 0 0 / 0.5),
-			0 0 30px oklch(0.82 0.14 60 / 0.35);
-	}
-
-	@keyframes more-turn {
-		to {
-			--more-angle: 360deg;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.projects__extra:not([hidden]) > :global(.card) {
-			animation: none;
-		}
-
-		.projects__more,
-		.projects__more[data-visible] {
-			transform: translate(-50%, 0);
-			animation: none;
-		}
 	}
 </style>

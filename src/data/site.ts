@@ -101,9 +101,6 @@ export const projectTime = (date: string) => {
 	return Number(match[2]) * 12 + month;
 };
 
-// How many projects show before the "Show more" button. The rest stay hidden until it is clicked.
-export const projectsShown = 4;
-
 // Shown newest first by date, so the order here does not matter.
 export const projects: Project[] = [
 	{

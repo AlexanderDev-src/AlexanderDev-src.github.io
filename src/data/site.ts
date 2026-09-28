@@ -203,6 +203,25 @@ export const projects: Project[] = [
 		],
 		code: "https://github.com/AlexanderDev-src/rust-ntex-task-api",
 	},
+	{
+		name: "Social Media & Mental Health",
+		year: "Aug 2026",
+		kind: "Data Science · Year 2",
+		topics: ["Data Science"],
+		draft: true,
+		draftNote:
+			"Still analysing the survey one research question at a time. The full report isn't written yet.",
+		description:
+			"A study of how time on social media, and the kind of content, relate to university students' mental well-being. The public Kaggle datasets turned out to be synthetic, so I ran my own survey at Khon Kaen University (121 students, Thai DASS-21) and analysed it in Python. So far, hours online show no link to depression, anxiety, or stress. Money problems show the strongest link.",
+		tags: ["Python", "pandas", "SciPy", "Matplotlib", "LaTeX"],
+		photos: [
+			{
+				src: "/projects/social-mental-health/what-if-social-media.gif",
+				caption: "What if: social media hours vs. DASS-21",
+			},
+		],
+		code: "https://github.com/AlexanderDev-src/DataSci_Social_and_MentalHealth",
+	},
 ];
 
 export const timeline = [

@@ -32,7 +32,7 @@ export const socials = [
 
 export const about = {
 	// Path to your photo in /public (e.g. '/portrait.jpg'). Leave empty to show a placeholder.
-	portrait: "",
+	portrait: "/Myself/me.webp",
 	quote: {
 		before: "I'm curious about how things work — so I ",
 		highlight: "build them",

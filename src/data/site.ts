@@ -197,6 +197,8 @@ export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: "Frontend & Markup",
 		items: [
+			{ id: "svelte", name: "Svelte" },
+			{ id: "astro", name: "Astro" },
 			{ id: "html5", name: "HTML" },
 			{ id: "css3", name: "CSS" },
 			{ id: "tailwindcss", name: "Tailwind CSS" },

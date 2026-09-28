@@ -76,10 +76,36 @@ export const placeholderPhotos = (seed: string, count = 6): ProjectPhoto[] =>
 		caption: "Placeholder image",
 	}));
 
+const MONTHS = [
+	"jan",
+	"feb",
+	"mar",
+	"apr",
+	"may",
+	"jun",
+	"jul",
+	"aug",
+	"sep",
+	"oct",
+	"nov",
+	"dec",
+];
+
+// Turns a project date like "Sep 2026" or "2026" into a number for sorting. A year alone counts as January.
+export const projectTime = (date: string) => {
+	const match = date.match(/(?:([a-z]{3})[a-z]*\s+)?(\d{4})/i);
+	if (!match) return 0;
+	const month = match[1]
+		? Math.max(MONTHS.indexOf(match[1].toLowerCase()), 0)
+		: 0;
+	return Number(match[2]) * 12 + month;
+};
+
+// Shown newest first by date, so the order here does not matter.
 export const projects: Project[] = [
 	{
 		name: "LexiLog",
-		year: "2026",
+		year: "Sep 2026",
 		kind: "Full-stack web app",
 		draft: true,
 		draftNote:
@@ -94,6 +120,35 @@ export const projects: Project[] = [
 			{ src: "/projects/lexilog/4.png", caption: "Practice log" },
 		],
 		code: "https://github.com/AlexanderDev-src/lexilog",
+	},
+	{
+		name: "I BUILD CPU",
+		year: "May 2026",
+		kind: "Team project · Year 1",
+		draft: true,
+		draftNote:
+			"Limit test: Spring Boot + Clean Architecture with a team of first-years who had just learned Java. Why did I do this to myself? lmao",
+		description:
+			"An online store for computer parts, built by our first-year team with Spring Boot and Clean Architecture: JWT sign-in, products and categories, orders, credit top-ups, reviews, image uploads to MinIO, and an admin dashboard. I coordinated the team and implemented the use cases, but most of my time went into teaching my teammates, since the project was a big step up for first-years.",
+		tags: [
+			"Java",
+			"Spring Boot",
+			"Clean Architecture",
+			"PostgreSQL",
+			"MinIO",
+			"Docker",
+		],
+		photos: [
+			{ src: "/projects/i-build-cpu/1.webp", caption: "Store" },
+			{ src: "/projects/i-build-cpu/2.webp", caption: "Product" },
+			{ src: "/projects/i-build-cpu/3.webp", caption: "Reviews" },
+			{ src: "/projects/i-build-cpu/4.webp", caption: "My orders" },
+			{ src: "/projects/i-build-cpu/5.webp", caption: "Transactions" },
+			{ src: "/projects/i-build-cpu/6.webp", caption: "Top-up" },
+			{ src: "/projects/i-build-cpu/7.webp", caption: "Admin dashboard" },
+			{ src: "/projects/i-build-cpu/8.webp", caption: "API docs (Swagger)" },
+		],
+		code: "https://github.com/Ax-47/java_project",
 	},
 ];
 
@@ -142,6 +197,8 @@ export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: "Frontend & Markup",
 		items: [
+			{ id: "svelte", name: "Svelte" },
+			{ id: "astro", name: "Astro" },
 			{ id: "html5", name: "HTML" },
 			{ id: "css3", name: "CSS" },
 			{ id: "tailwindcss", name: "Tailwind CSS" },

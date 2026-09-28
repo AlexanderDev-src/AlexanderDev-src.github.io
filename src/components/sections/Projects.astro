@@ -2,7 +2,7 @@
 import SectionHeading from '../SectionHeading.astro';
 import ProjectCard from '../ProjectCard.astro';
 import ProjectGallery from '../ProjectGallery.astro';
-import { projectFilterKeys, projectFilters, projects, projectTime } from '../../data/site';
+import { projectFilterKeys, projectFilters, projects, projectsShown, projectTime } from '../../data/site';
 
 const sorted = [...projects].sort((a, b) => projectTime(b.year) - projectTime(a.year));
 
@@ -46,15 +46,31 @@ const filters = [filterGroup(projectFilters.topics), filterGroup(projectFilters.
 		<p class="projects__status sr-only" aria-live="polite"></p>
 	</div>
 
-	<div class="projects__grid">
-		{sorted.map((project) => <ProjectCard {...project} />)}
+	<div class="projects__grid" id="project-grid" data-shown={projectsShown}>
+		{sorted.map((project, i) => <ProjectCard {...project} hidden={i >= projectsShown} />)}
 	</div>
 
-	<!-- Without JavaScript the filters can't work, and every project already shows. -->
+	{
+		projects.length > projectsShown && (
+			<div class="projects__more">
+				<button type="button" class="projects__more-button" aria-controls="project-grid" aria-expanded="false">
+					<span class="projects__more-label">Show {projects.length - projectsShown} more</span>
+					<span class="projects__more-arrow mono" aria-hidden="true">↓</span>
+				</button>
+			</div>
+		)
+	}
+
+	<!-- Without JavaScript the filters and the Show more button can't work, so every project shows. -->
 	<noscript>
 		<style is:inline>
-			.projects__filters {
+			.projects__filters,
+			.projects__more {
 				display: none !important;
+			}
+
+			.projects__grid .card[hidden] {
+				display: flex !important;
 			}
 		</style>
 	</noscript>
@@ -64,35 +80,72 @@ const filters = [filterGroup(projectFilters.topics), filterGroup(projectFilters.
 
 <script>
 	const filterButtons = document.querySelectorAll<HTMLButtonElement>('.projects__filter');
+	const grid = document.querySelector<HTMLElement>('.projects__grid');
 	const cards = document.querySelectorAll<HTMLElement>('.projects__grid .card');
 	const status = document.querySelector('.projects__status');
+	const more = document.querySelector<HTMLElement>('.projects__more');
+	const moreButton = more?.querySelector('button');
+	const moreLabel = more?.querySelector('.projects__more-label');
 	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+	const shown = Number(grid?.dataset.shown) || cards.length;
+
+	let filter = '';
+	let expanded = false;
+
+	// Shows the cards that match the filter: only the first few, unless the list is open.
+	function update() {
+		const wasShowing = new Set([...cards].filter((card) => !card.hidden));
+		const matching = [...cards].filter(
+			(card) => !filter || (card.dataset.filters ?? '').split('|').includes(filter),
+		);
+
+		cards.forEach((card) => {
+			const place = matching.indexOf(card);
+			card.hidden = place === -1 || (!expanded && place >= shown);
+
+			if (!card.hidden && !reduceMotion.matches && !wasShowing.has(card)) {
+				card.animate([{ opacity: 0, transform: 'translateY(16px)' }, {}], {
+					duration: 500,
+					easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
+				});
+			}
+		});
+
+		const extra = matching.length - shown;
+		if (more) more.hidden = extra <= 0;
+		moreButton?.setAttribute('aria-expanded', String(expanded));
+		if (moreLabel) moreLabel.textContent = expanded ? 'Show less' : `Show ${extra} more`;
+
+		const showing = matching.length - (expanded ? 0 : Math.max(extra, 0));
+		if (status) {
+			status.textContent = `Showing ${showing} of ${matching.length} ${matching.length === 1 ? 'project' : 'projects'}`;
+		}
+	}
 
 	filterButtons.forEach((chosen) => {
 		chosen.addEventListener('click', () => {
-			const filter = chosen.dataset.filter ?? '';
-			const wasShowing = new Set([...cards].filter((card) => !card.hidden));
-
+			filter = chosen.dataset.filter ?? '';
 			filterButtons.forEach((other) => other.setAttribute('aria-pressed', String(other === chosen)));
-
-			let matches = 0;
-			cards.forEach((card) => {
-				const match = !filter || (card.dataset.filters ?? '').split('|').includes(filter);
-				card.hidden = !match;
-				if (!match) return;
-				matches++;
-
-				if (!reduceMotion.matches && !wasShowing.has(card)) {
-					card.animate([{ opacity: 0, transform: 'translateY(16px)' }, {}], {
-						duration: 500,
-						easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
-					});
-				}
-			});
-
-			if (status) status.textContent = `Showing ${matches} ${matches === 1 ? 'project' : 'projects'}`;
+			update();
 		});
 	});
+
+	moreButton?.addEventListener('click', () => {
+		expanded = !expanded;
+		update();
+
+		// Closing the list can leave the page scrolled past it, so bring the last cards back into view.
+		if (!expanded && grid && grid.getBoundingClientRect().bottom < 0) {
+			grid.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'end' });
+		}
+	});
+
+	// The button floats at the bottom of the screen only while the project cards are on screen.
+	if (grid && more) {
+		new IntersectionObserver(([entry]) => more.classList.toggle('is-near', entry.isIntersecting), {
+			rootMargin: '0px 0px -15% 0px',
+		}).observe(grid);
+	}
 </script>
 
 <style>
@@ -185,5 +238,71 @@ const filters = [filterGroup(projectFilters.topics), filterGroup(projectFilters.
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
 		gap: clamp(40px, 4vw, 56px) clamp(24px, 3vw, 40px);
+	}
+
+	/* Floats at the bottom of the screen, so the list opens or closes without scrolling to its end. */
+	.projects__more {
+		position: fixed;
+		left: 50%;
+		bottom: calc(24px + env(safe-area-inset-bottom));
+		z-index: 20;
+		translate: -50% 16px;
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity 0.3s,
+			translate 0.4s var(--ease-out),
+			visibility 0.3s;
+	}
+
+	.projects__more.is-near {
+		translate: -50% 0;
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.projects__more[hidden] {
+		display: none;
+	}
+
+	.projects__more-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 22px;
+		border: 1px solid oklch(0.82 0.14 60 / 0.6);
+		border-radius: 999px;
+		background: oklch(0.12 0.02 285 / 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		box-shadow: 0 16px 40px -16px oklch(0 0 0 / 0.8);
+		color: var(--color-amber-soft);
+		font-size: 15px;
+		font-weight: 600;
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	.projects__more-button:hover {
+		background: oklch(0.82 0.14 60 / 0.16);
+		color: var(--color-text);
+	}
+
+	.projects__more-arrow {
+		transition: rotate 0.4s var(--ease-out);
+	}
+
+	.projects__more-button[aria-expanded='true'] .projects__more-arrow {
+		rotate: 180deg;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.projects__more,
+		.projects__more-arrow {
+			transition: none;
+		}
 	}
 </style>

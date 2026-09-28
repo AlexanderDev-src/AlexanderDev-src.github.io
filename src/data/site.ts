@@ -52,6 +52,8 @@ export interface Project {
 	kind: string;
 	description: string;
 	tags: string[];
+	// Topics for the filter buttons above the projects, like "Full-stack" or "Machine Learning". Not shown on the card.
+	topics?: string[];
 	// Path to a 16:10 screenshot in /public. Leave empty to show a placeholder.
 	image?: string;
 	// Photos for the card collage and the gallery (paths in /public).
@@ -101,12 +103,31 @@ export const projectTime = (date: string) => {
 	return Number(match[2]) * 12 + month;
 };
 
+// Filter buttons above the projects. Each one matches a project's topics or tags (case does not matter).
+// A button only shows when at least one project matches it, so topics with no projects yet can stay here.
+export const projectFilters = {
+	topics: [
+		"Full-stack",
+		"Back-end",
+		"Front-end",
+		"Machine Learning",
+		"Deep Learning",
+		"Data Science",
+	],
+	languages: ["Rust", "Java", "C++", "C", "Python", "TypeScript", "JavaScript"],
+};
+
+// Everything a project can be filtered by, in lower case.
+export const projectFilterKeys = (project: Project) =>
+	[...(project.topics ?? []), ...project.tags].map((key) => key.toLowerCase());
+
 // Shown newest first by date, so the order here does not matter.
 export const projects: Project[] = [
 	{
 		name: "LexiLog",
 		year: "Sep 2026",
 		kind: "Full-stack web app",
+		topics: ["Full-stack"],
 		draft: true,
 		draftNote:
 			"In my config it's using tailscale to connect website only because for my security when I'm on public network <3",
@@ -125,6 +146,7 @@ export const projects: Project[] = [
 		name: "I BUILD CPU",
 		year: "May 2026",
 		kind: "Team project · Year 1",
+		topics: ["Back-end"],
 		draft: true,
 		draftNote:
 			"Limit test: Spring Boot + Clean Architecture with a team of first-years who had just learned Java. Why did I do this to myself? lmao",
@@ -149,6 +171,19 @@ export const projects: Project[] = [
 			{ src: "/projects/i-build-cpu/8.webp", caption: "API docs (Swagger)" },
 		],
 		code: "https://github.com/Ax-47/java_project",
+	},
+	{
+		name: "Nabla",
+		year: "Sep 2026",
+		kind: "Neural Network",
+		topics: ["Neural Network", "Deep Learning"],
+		draft: true,
+		draftNote: "NOT YET",
+		description:
+			"∇ : A tiny reverse-mode autodiff engine and neural network library in C++23. Header-only, zero dependencies, 98% on MNIST.",
+		tags: ["C++", "Neural Network", "DL"],
+		photos: [],
+		code: "https://github.com/AlexanderDev-src/nabla",
 	},
 ];
 

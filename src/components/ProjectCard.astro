@@ -1,5 +1,5 @@
 ---
-import { draftNote as defaultNote, placeholderPhotos, type Project } from '../data/site';
+import { draftNote as defaultNote, placeholderPhotos, projectFilterKeys, type Project } from '../data/site';
 
 type Props = Project;
 
@@ -13,7 +13,7 @@ const gallery = photos?.length ? photos : image ? [{ src: image, caption: name }
 const cover = gallery.slice(0, 3);
 ---
 
-<article class="card">
+<article class="card" data-filters={projectFilterKeys(Astro.props).join('|')}>
 	<button
 		type="button"
 		class="card__media"
@@ -61,6 +61,11 @@ const cover = gallery.slice(0, 3);
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
+	}
+
+	/* Hidden by the project filters. */
+	.card[hidden] {
+		display: none;
 	}
 
 	.card__media {

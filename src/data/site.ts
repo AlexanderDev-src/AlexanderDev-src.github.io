@@ -121,6 +121,35 @@ export const projects: Project[] = [
 		],
 		code: "https://github.com/AlexanderDev-src/lexilog",
 	},
+	{
+		name: "I BUILD CPU",
+		year: "May 2026",
+		kind: "Team project · Year 1",
+		draft: true,
+		draftNote:
+			"Limit test: Spring Boot + Clean Architecture with a team of first-years who had just learned Java. Why did I do this to myself? lmao",
+		description:
+			"An online store for computer parts, built by our first-year team with Spring Boot and Clean Architecture: JWT sign-in, products and categories, orders, credit top-ups, reviews, image uploads to MinIO, and an admin dashboard. I coordinated the team and implemented the use cases, but most of my time went into teaching my teammates, since the project was a big step up for first-years.",
+		tags: [
+			"Java",
+			"Spring Boot",
+			"Clean Architecture",
+			"PostgreSQL",
+			"MinIO",
+			"Docker",
+		],
+		photos: [
+			{ src: "/projects/i-build-cpu/1.webp", caption: "Store" },
+			{ src: "/projects/i-build-cpu/2.webp", caption: "Product" },
+			{ src: "/projects/i-build-cpu/3.webp", caption: "Reviews" },
+			{ src: "/projects/i-build-cpu/4.webp", caption: "My orders" },
+			{ src: "/projects/i-build-cpu/5.webp", caption: "Transactions" },
+			{ src: "/projects/i-build-cpu/6.webp", caption: "Top-up" },
+			{ src: "/projects/i-build-cpu/7.webp", caption: "Admin dashboard" },
+			{ src: "/projects/i-build-cpu/8.webp", caption: "API docs (Swagger)" },
+		],
+		code: "https://github.com/Ax-47/java_project",
+	},
 ];
 
 export const timeline = [

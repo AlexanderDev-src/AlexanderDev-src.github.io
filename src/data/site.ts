@@ -113,6 +113,7 @@ export const projectFilters = {
 		"Machine Learning",
 		"Deep Learning",
 		"Data Science",
+		"Neural Network",
 	],
 	languages: ["Rust", "Java", "C++", "C", "Python", "TypeScript", "JavaScript"],
 };
@@ -181,7 +182,7 @@ export const projects: Project[] = [
 		draftNote: "NOT YET",
 		description:
 			"∇ : A tiny reverse-mode autodiff engine and neural network library in C++23. Header-only, zero dependencies, 98% on MNIST.",
-		tags: ["C++", "Neural Network", "DL"],
+		tags: ["C++", "Neural Network", "Deep Learning"],
 		photos: [],
 		code: "https://github.com/AlexanderDev-src/nabla",
 	},
@@ -206,6 +207,7 @@ export const darkIcons = [
 	"github",
 	"markdown",
 	"latex",
+	"astro",
 ];
 
 export const deviconUrl = (id: string) => `${DEVICON}${id}/${id}-original.svg`;

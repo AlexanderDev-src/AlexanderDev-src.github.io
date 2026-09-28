@@ -123,6 +123,11 @@ p {
 	outline-offset: 3px;
 }
 
+/* Sections get focus after an in-page jump (scripts/jump.ts). They are not controls, so no ring. */
+[tabindex='-1']:focus {
+	outline: none;
+}
+
 /* Layout primitives */
 .container {
 	width: 100%;

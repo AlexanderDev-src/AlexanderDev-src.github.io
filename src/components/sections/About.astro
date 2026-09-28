@@ -4,7 +4,7 @@ import { site, about, timeline } from '../../data/site';
 
 <section id="about" class="container about">
 	<div class="about__main">
-		<span class="label">03 / ABOUT ME</span>
+		<span class="label" data-arrive="label">03 / ABOUT ME</span>
 
 		<div class="about__intro">
 			<div class="about__portrait">
@@ -21,7 +21,7 @@ import { site, about, timeline } from '../../data/site';
 			</div>
 		</div>
 
-		<p class="about__quote">
+		<p class="about__quote" data-arrive="title">
 			{about.quote.before}<span class="about__highlight">{about.quote.highlight}</span>{about.quote.after}
 		</p>
 		<p class="about__bio">{about.bio}</p>

@@ -97,6 +97,11 @@ export function startCosmos() {
 	let shoot: Shoot | null = null;
 	let nextShoot = 2;
 	let holeVisible = true;
+	// Warp: while an in-page jump runs (scripts/jump.ts), stars stretch into streaks with the scroll speed.
+	let warping = false;
+	let warp = 0;
+	let speed = 0;
+	let lastScroll = 0;
 
 	const renderStill = () => {
 		if (still) draw(0, 0);
@@ -323,6 +328,11 @@ export function startCosmos() {
 		mouse.x += (mouse.tx - mouse.x) * ease;
 		mouse.y += (mouse.ty - mouse.y) * ease;
 		const scroll = still ? 0 : window.scrollY;
+		if (dt > 0) {
+			speed += ((scroll - lastScroll) / dt - speed) * (1 - Math.exp(-dt * 15));
+			warp += ((warping ? 1 : 0) - warp) * (1 - Math.exp(-dt * 6));
+		}
+		lastScroll = scroll;
 
 		x.setTransform(dpr, 0, 0, dpr, 0, 0);
 		x.fillStyle = 'oklch(0.08 0.015 285)';
@@ -345,7 +355,17 @@ export function startCosmos() {
 			const py = (((s.y * h - scroll * s.z * 0.25 - mouse.y * s.z * 40) % h) + h) % h;
 			x.globalAlpha = s.a * (0.55 + 0.45 * Math.sin(sec * s.ts + s.tw));
 			x.fillStyle = s.c;
-			if (s.r > 1.3) {
+			// The trail is where the star was ~90ms ago, so it points against the scroll.
+			const trail = Math.max(-260, Math.min(260, warp * speed * s.z * 0.25 * 0.09));
+			if (Math.abs(trail) > 2) {
+				x.strokeStyle = s.c;
+				x.lineWidth = Math.max(0.8, s.r * 1.4);
+				x.lineCap = 'round';
+				x.beginPath();
+				x.moveTo(px, py);
+				x.lineTo(px, py + trail);
+				x.stroke();
+			} else if (s.r > 1.3) {
 				x.beginPath();
 				x.arc(px, py, s.r, 0, TAU);
 				x.fill();
@@ -412,6 +432,10 @@ export function startCosmos() {
 		renderStill();
 		return;
 	}
+
+	lastScroll = window.scrollY;
+	window.addEventListener('jump:start', () => (warping = true));
+	window.addEventListener('jump:end', () => (warping = false));
 
 	window.addEventListener('pointermove', (e) => {
 		mouse.tx = e.clientX / window.innerWidth - 0.5;

@@ -113,6 +113,7 @@ export const projectFilters = {
 		"Machine Learning",
 		"Deep Learning",
 		"Data Science",
+		"Neural Network",
 	],
 	languages: ["Rust", "Java", "C++", "C", "Python", "TypeScript", "JavaScript"],
 };
@@ -181,9 +182,26 @@ export const projects: Project[] = [
 		draftNote: "NOT YET",
 		description:
 			"∇ : A tiny reverse-mode autodiff engine and neural network library in C++23. Header-only, zero dependencies, 98% on MNIST.",
-		tags: ["C++", "Neural Network", "DL"],
+		tags: ["C++", "Neural Network", "Deep Learning"],
 		photos: [],
 		code: "https://github.com/AlexanderDev-src/nabla",
+	},
+	{
+		name: "Task API",
+		year: "Aug 2026",
+		kind: "REST API · Learning Rust",
+		topics: ["Back-end"],
+		draft: true,
+		draftNote:
+			"Status: Working on a login system, but I don't have free time for it yet.",
+		description:
+			"A Task/Todo REST API I built to learn Rust, with ntex and PostgreSQL: create, list, update, and delete tasks with validation, status filters, paging, and one JSON error shape. It has a small React + TypeScript client and a 54-check acceptance script.",
+		tags: ["Rust", "ntex", "PostgreSQL", "React", "TypeScript", "Docker"],
+		photos: [
+			{ src: "/projects/taskapi/taskapi1.png", caption: "Board" },
+			{ src: "/projects/taskapi/taskapi2.png", caption: "List" },
+		],
+		code: "https://github.com/AlexanderDev-src/rust-ntex-task-api",
 	},
 ];
 
@@ -206,6 +224,7 @@ export const darkIcons = [
 	"github",
 	"markdown",
 	"latex",
+	"astro",
 ];
 
 export const deviconUrl = (id: string) => `${DEVICON}${id}/${id}-original.svg`;

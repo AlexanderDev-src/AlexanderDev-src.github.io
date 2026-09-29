@@ -107,6 +107,20 @@ import { site, nav } from '../data/site';
 		border-bottom: 1px solid var(--hairline-soft);
 	}
 
+	/* Arrival: drops in after the hero starts to emerge (Hero.astro). */
+	@media (prefers-reduced-motion: no-preference) {
+		.header {
+			animation: header-drop 1s var(--ease-out) 1.1s backwards;
+		}
+	}
+
+	@keyframes header-drop {
+		from {
+			opacity: 0;
+			transform: translateY(-100%);
+		}
+	}
+
 	.header__inner {
 		display: flex;
 		flex-wrap: wrap;

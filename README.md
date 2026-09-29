@@ -29,7 +29,7 @@ All the text, links, projects, and skills live in one file: `src/data/site.ts`. 
 
 | Export | What it controls |
 | :-- | :-- |
-| `site` | Name, role, status line, email, intro text, and the time zone for the hero clock |
+| `site` | Name, role, status line, email, intro text, résumé paths, and the time zone for the hero clock |
 | `nav`, `socials` | Header links and contact links |
 | `about` | Portrait path, quote, and bio |
 | `projects` | Project cards and their galleries |
@@ -68,6 +68,12 @@ The `cosmos` object in `src/data/site.ts` controls the animation:
 - `showBlackHole`, `showOrbitIcons` — turn the black hole or its icons on and off
 - `orbitIcons` — which Devicon logos spiral into the black hole, each with a short text fallback
 
+### Résumé
+
+The résumé PDFs are generated from `src/data/resume.ts` when the site builds, one per language in `site.resume` (English and Thai). Most of the text comes from `site.ts`: name, role, intro, education, projects, and skills. `resume.ts` holds what only the résumé needs, such as the contact links, which projects to list, and the Thai text. Replace any value there with your own text when the résumé should say something different from the site.
+
+Run `npm run dev` and open http://localhost:4321/Alexander-Sanford-Resume.pdf (or `-TH.pdf`) to see a change. The layout is in `src/lib/resume-pdf.ts`, and the fonts it embeds are in `src/assets/fonts/`.
+
 ## Project structure
 
 ```text
@@ -80,8 +86,11 @@ src/
 │   ├── ProjectGallery.astro
 │   └── SectionHeading.astro
 ├── data/site.ts         all page content
+├── data/resume.ts       résumé content (most of it from site.ts)
+├── lib/resume-pdf.ts    résumé PDF layout
 ├── layouts/Layout.astro
 ├── pages/index.astro
+├── pages/[file].pdf.ts  serves the résumé PDFs
 ├── scripts/cosmos.ts    starfield and black hole
 └── styles/global.css
 public/

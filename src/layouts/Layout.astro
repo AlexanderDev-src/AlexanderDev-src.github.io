@@ -6,9 +6,11 @@ import Footer from '../components/Footer.astro';
 interface Props {
 	title?: string;
 	description?: string;
+	// Leave out the header and footer, for full-screen pages like /welcome.
+	bare?: boolean;
 }
 
-const { title = 'Portfolio', description = 'Personal portfolio' } = Astro.props;
+const { title = 'Portfolio', description = 'Personal portfolio', bare = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -37,11 +39,11 @@ const { title = 'Portfolio', description = 'Personal portfolio' } = Astro.props;
 			<div class="vignette" aria-hidden="true"></div>
 
 			<div class="page__content">
-				<Header />
+				{!bare && <Header />}
 				<main id="main">
 					<slot />
 				</main>
-				<Footer />
+				{!bare && <Footer />}
 			</div>
 		</div>
 

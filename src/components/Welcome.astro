@@ -1,5 +1,473 @@
 ---
-import astroLogo from '../assets/astro.svg';
-import background from '../assets/background.svg';
+import { site } from '../data/site';
+
+const portfolio = `${import.meta.env.BASE_URL}portfolio/`;
+const greeting = 'Greetings.';
 ---
 
+<section class="welcome" aria-label="Greetings">
+	<p class="welcome__logo">
+		<span class="welcome__mark" data-pull aria-hidden="true"></span>
+		<span data-pull>{site.name.toUpperCase()}</span>
+	</p>
+
+	<div class="welcome__hole" aria-hidden="true">
+		<canvas id="blackhole"></canvas>
+	</div>
+
+	<div class="welcome__text">
+		<p class="welcome__meta">
+			<span data-pull>{site.role}</span>
+			<span class="welcome__sep" data-pull aria-hidden="true">✦</span>
+			<span data-pull>{site.focus}</span>
+		</p>
+		<h1 class="welcome__title">
+			<span class="sr-only">{greeting}</span>
+			<span class="welcome__word" aria-hidden="true">
+				{[...greeting].map((char, i) => <span class="welcome__char" data-pull style={`--i: ${i}`}>{char}</span>)}
+			</span>
+		</h1>
+		<div class="welcome__cta">
+			<a class="welcome__enter" data-pull href={portfolio}>
+				View My Journey <span class="welcome__arrow mono" aria-hidden="true">→</span>
+			</a>
+		</div>
+	</div>
+
+	<div class="welcome__horizon" aria-hidden="true"></div>
+</section>
+
+<script>
+	import { HORIZON } from '../scripts/cosmos';
+
+	// Enter drops everything into the black hole: the stars (cosmos.ts) and every [data-pull] piece
+	// spiral in and stretch towards it, then its horizon grows over the screen and the portfolio loads.
+	// With reduced motion the link just navigates.
+	const PULL = 1.5;
+	const SWALLOW_AT = 1.25;
+	const SWALLOW = 0.75;
+
+	const welcome = document.querySelector<HTMLElement>('.welcome');
+	const enter = document.querySelector<HTMLAnchorElement>('.welcome__enter');
+	const word = document.querySelector<HTMLElement>('.welcome__word');
+	const hole = document.getElementById('blackhole');
+	const horizon = document.querySelector<HTMLElement>('.welcome__horizon');
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+	// Each letter is its own element so it can float and fall on its own.
+	// This lines their gradients up into one across the word.
+	function measure() {
+		if (!word) return;
+		word.style.setProperty('--w', `${word.offsetWidth}px`);
+		for (const char of word.querySelectorAll<HTMLElement>('.welcome__char')) {
+			char.style.setProperty('--x', `${char.offsetLeft}px`);
+		}
+	}
+	document.fonts?.ready.then(measure);
+	if (word) new ResizeObserver(measure).observe(word);
+
+	// The portfolio is where Enter goes, so fetch it early.
+	if (enter) {
+		const prefetch = document.createElement('link');
+		prefetch.rel = 'prefetch';
+		prefetch.href = enter.href;
+		document.head.append(prefetch);
+	}
+
+	// The text sits a little in front of the stars, so it shifts a little against the mouse.
+	let queued = false;
+	window.addEventListener('pointermove', (event) => {
+		if (!welcome || reduce.matches || queued || welcome.hasAttribute('data-entering')) return;
+		queued = true;
+		requestAnimationFrame(() => {
+			queued = false;
+			welcome.style.setProperty('--mx', (event.clientX / window.innerWidth - 0.5).toFixed(3));
+			welcome.style.setProperty('--my', (event.clientY / window.innerHeight - 0.5).toFixed(3));
+		});
+	});
+
+	enter?.addEventListener('click', (event) => {
+		if (!welcome || !hole || !horizon || reduce.matches || event.button !== 0) return;
+		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+		event.preventDefault();
+		if (welcome.hasAttribute('data-entering')) return;
+		welcome.setAttribute('data-entering', '');
+		fall(welcome, hole, horizon, enter.href);
+	});
+
+	function fall(welcome: HTMLElement, hole: HTMLElement, horizon: HTMLElement, href: string) {
+		window.dispatchEvent(new CustomEvent('cosmos:collapse', { detail: SWALLOW_AT + SWALLOW }));
+
+		const rect = hole.getBoundingClientRect();
+		const cx = rect.left + rect.width / 2;
+		const cy = rect.top + rect.height / 2;
+		const R = Math.min(rect.width, rect.height) * HORIZON;
+
+		const pieces = [...welcome.querySelectorAll<HTMLElement>('[data-pull]')].map((el) => {
+			const box = el.getBoundingClientRect();
+			const dx = box.left + box.width / 2 - cx;
+			const dy = box.top + box.height / 2 - cy;
+			return { el, dx, dy, d: Math.hypot(dx, dy), a: Math.atan2(dy, dx), o: Number(getComputedStyle(el).opacity) };
+		});
+		const far = Math.max(...pieces.map((p) => p.d));
+		const start = performance.now();
+
+		const frame = (now: number) => {
+			const t = (now - start) / 1000;
+			for (const p of pieces) {
+				// Nearer pieces let go first, then each one speeds up as it falls.
+				const lag = (p.d / far) * 0.35;
+				const f = Math.min(1, Math.max(0, (t - lag) / (PULL - 0.35))) ** 2.2;
+				const r = p.d * (1 - f);
+				const a = p.a + f ** 1.5 * 2.2;
+				const tx = Math.cos(a) * r - p.dx;
+				const ty = Math.sin(a) * r - p.dy;
+				// Stretched along the pull and squeezed across it, turning with its orbit.
+				const s = 1 - 0.85 * f;
+				p.el.style.transform =
+					`translate(${tx}px, ${ty}px) rotate(${a}rad) scale(${s * (1 + 1.6 * f)}, ${s * (1 - 0.5 * f)}) ` +
+					`rotate(${-a}rad) rotate(${a - p.a}rad)`;
+				p.el.style.opacity = String(p.o * Math.min(1, Math.max(0, (r - R * 0.4) / (R * 0.9))));
+			}
+			if (t < PULL) requestAnimationFrame(frame);
+		};
+		requestAnimationFrame(frame);
+
+		// The horizon starts as the hole's own dark disc and ring, then grows past the screen corners.
+		setTimeout(() => {
+			const from = `${2 * R * 1.03}px`;
+			const to = `${2 * Math.hypot(Math.max(cx, window.innerWidth - cx), Math.max(cy, window.innerHeight - cy))}px`;
+			horizon.style.left = `${cx}px`;
+			horizon.style.top = `${cy}px`;
+			horizon.style.visibility = 'visible';
+			horizon
+				.animate(
+					[
+						{ width: from, height: from },
+						{ width: to, height: to },
+					],
+					{ duration: SWALLOW * 1000, easing: 'cubic-bezier(0.55, 0, 1, 0.45)', fill: 'forwards' },
+				)
+				.finished.then(() => window.location.assign(href));
+		}, SWALLOW_AT * 1000);
+	}
+
+	// Coming back with the Back button can restore the page as it was left: swallowed. Start over.
+	window.addEventListener('pageshow', (event) => {
+		if (event.persisted && welcome?.hasAttribute('data-entering')) window.location.reload();
+	});
+</script>
+
+<style>
+	.welcome {
+		--mx: 0;
+		--my: 0;
+		position: relative;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		justify-items: center;
+		min-height: 100dvh;
+		padding: 22px var(--gutter) clamp(40px, 8vh, 88px);
+	}
+
+	.welcome[data-entering] {
+		pointer-events: none;
+	}
+
+	.welcome__logo {
+		position: relative;
+		z-index: 2;
+		justify-self: start;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 18px;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+		translate: calc(var(--mx) * -6px) calc(var(--my) * -4px);
+		transition: translate 1s var(--ease-out);
+	}
+
+	.welcome__mark {
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: oklch(0.06 0.01 285);
+		box-shadow:
+			0 0 0 2px var(--color-amber),
+			0 0 16px 2px oklch(0.72 0.17 300 / 0.8);
+	}
+
+	/* Square box for the hole. It shrinks on short screens so the text still fits below it. */
+	.welcome__hole {
+		position: relative;
+		z-index: 1;
+		align-self: center;
+		width: min(100%, 680px, max(240px, 100dvh - 380px));
+		aspect-ratio: 1 / 1;
+	}
+
+	.welcome__hole canvas {
+		position: absolute;
+		inset: -15%;
+		width: 130%;
+		max-width: none;
+		height: 130%;
+		pointer-events: none;
+	}
+
+	.welcome__text {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 28px;
+		text-align: center;
+		translate: calc(var(--mx) * -14px) calc(var(--my) * -10px);
+		transition: translate 1s var(--ease-out);
+	}
+
+	.welcome__meta {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 10px 14px;
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--color-muted);
+	}
+
+	.welcome__meta > span {
+		white-space: nowrap;
+	}
+
+	.welcome__sep {
+		color: var(--color-amber);
+		opacity: 0.7;
+	}
+
+	.welcome__title {
+		font-family: var(--font-display);
+		font-weight: 800;
+		/* "Greetings." is about 7.7em wide; the caps keep it on one line and under the hole. */
+		font-size: min(clamp(44px, 8vw, 116px), 14dvh, (100vw - 2 * var(--gutter)) / 8);
+		line-height: 0.92;
+		letter-spacing: -0.035em;
+	}
+
+	.welcome__word {
+		position: relative;
+		display: inline-block;
+	}
+
+	/* One gradient across the word, twice its width so it can flow and loop (see measure()). */
+	.welcome__char {
+		display: inline-block;
+		background: linear-gradient(
+			90deg,
+			oklch(0.86 0.12 60),
+			oklch(0.75 0.17 330) 25%,
+			oklch(0.72 0.16 285) 50%,
+			oklch(0.75 0.17 330) 75%,
+			oklch(0.86 0.12 60)
+		);
+		background-size: calc(var(--w, 9em) * 2) 100%;
+		background-position: calc(var(--x, 0px) * -1) 0;
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+
+	/* Same pill as the projects' Show more button (Projects.astro). */
+	.welcome__enter {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 22px;
+		border: 1px solid oklch(0.82 0.14 60 / 0.6);
+		border-radius: 999px;
+		background: oklch(0.12 0.02 285 / 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		box-shadow: 0 16px 40px -16px oklch(0 0 0 / 0.8);
+		color: var(--color-amber-soft);
+		font-size: 15px;
+		font-weight: 600;
+		white-space: nowrap;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	.welcome__enter:hover {
+		background: oklch(0.82 0.14 60 / 0.16);
+		color: var(--color-text);
+	}
+
+	.welcome__horizon {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 5;
+		width: 0;
+		height: 0;
+		translate: -50% -50%;
+		border-radius: 50%;
+		background: var(--color-horizon);
+		box-shadow:
+			0 0 0 1.5px oklch(0.97 0.05 75 / 0.9),
+			0 0 32px 8px oklch(0.85 0.14 55 / 0.5),
+			0 0 110px 36px oklch(0.65 0.2 330 / 0.35);
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	/* Nothing here holds still: it all fades in out of a blur, then drifts as if weightless.
+	   Drifting uses `translate` and `rotate`, so the fall can use `transform` at the same time.
+	   Arrivals use `backwards` so they end on the normal style. */
+	@media (prefers-reduced-motion: no-preference) {
+		.welcome__hole {
+			animation: welcome-fade 1.6s var(--ease-out) backwards;
+		}
+
+		.welcome__logo {
+			animation: welcome-arrive 1.2s var(--ease-out) 0.2s backwards;
+		}
+
+		.welcome__logo > * {
+			--float: 3px;
+			--tilt: 1deg;
+			animation: welcome-drift 7s ease-in-out infinite;
+		}
+
+		.welcome__logo > :last-child {
+			animation-delay: -2.5s;
+		}
+
+		.welcome__mark {
+			animation:
+				welcome-drift 7s ease-in-out infinite,
+				welcome-pulse 4s ease-in-out infinite;
+		}
+
+		.welcome__meta {
+			animation: welcome-arrive 1.2s var(--ease-out) 0.35s backwards;
+		}
+
+		.welcome__meta > span {
+			--float: 4px;
+			--tilt: 1deg;
+			animation: welcome-drift 7s ease-in-out infinite;
+		}
+
+		.welcome__meta > span:nth-child(2) {
+			--tilt: 12deg;
+			animation:
+				welcome-drift 5s ease-in-out -1.5s infinite,
+				welcome-twinkle 2.8s ease-in-out infinite;
+		}
+
+		.welcome__meta > span:nth-child(3) {
+			animation-duration: 8s;
+			animation-delay: -4s;
+		}
+
+		/* Each letter materialises in turn; the drift delays make a slow wave run through the word. */
+		.welcome__char {
+			--float: 0.07em;
+			--tilt: 3deg;
+			animation:
+				welcome-materialise 1s var(--ease-out) calc(0.5s + var(--i) * 0.06s) backwards,
+				welcome-drift calc(5.5s + var(--i) * 0.2s) ease-in-out calc(var(--i) * -0.6s) infinite,
+				welcome-flow 14s linear infinite;
+		}
+
+		/* Slides up into place like Show more does when it appears. */
+		.welcome__cta {
+			animation: welcome-rise 0.6s var(--ease-out) 1.3s backwards;
+		}
+
+		.welcome__enter {
+			--float: 4px;
+			--tilt: 0deg;
+			animation: welcome-drift 6.5s ease-in-out -3s infinite;
+		}
+
+		.welcome__arrow {
+			animation: welcome-nudge 2.4s ease-in-out infinite;
+		}
+	}
+
+	@keyframes welcome-fade {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes welcome-arrive {
+		from {
+			opacity: 0;
+			filter: blur(10px);
+		}
+	}
+
+	@keyframes welcome-rise {
+		from {
+			opacity: 0;
+			translate: 0 16px;
+		}
+	}
+
+	@keyframes welcome-materialise {
+		from {
+			opacity: 0;
+			filter: blur(14px);
+			scale: 1.6;
+		}
+	}
+
+	@keyframes welcome-drift {
+		0%,
+		100% {
+			translate: 0 0;
+			rotate: 0deg;
+		}
+		33% {
+			translate: calc(var(--float) * 0.4) calc(var(--float) * -1);
+			rotate: var(--tilt);
+		}
+		66% {
+			translate: calc(var(--float) * -0.5) calc(var(--float) * 0.5);
+			rotate: calc(var(--tilt) * -0.6);
+		}
+	}
+
+	@keyframes welcome-flow {
+		to {
+			background-position: calc(var(--x, 0px) * -1 - var(--w, 9em) * 2) 0;
+		}
+	}
+
+	@keyframes welcome-pulse {
+		50% {
+			box-shadow:
+				0 0 0 2px var(--color-amber),
+				0 0 26px 6px oklch(0.72 0.17 300 / 0.9);
+		}
+	}
+
+	@keyframes welcome-twinkle {
+		50% {
+			scale: 0.7;
+		}
+	}
+
+	@keyframes welcome-nudge {
+		50% {
+			translate: 4px 0;
+		}
+	}
+</style>

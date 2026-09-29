@@ -21,7 +21,12 @@ import { site } from '../../data/site';
 
 		<div class="hero__actions" data-depth>
 			<a class="btn btn--primary" href="#work">Explore my work <span class="mono" aria-hidden="true">→</span></a>
-			<a class="btn btn--ghost" href={site.resume}>Download résumé</a>
+			{/* Each PDF opens in a new tab, where the browser shows it like a file. */}
+			<div class="resume" role="group" aria-label="Résumé">
+				<span class="resume__label">Résumé</span>
+				<a class="resume__lang" href={site.resume.en} target="_blank" rel="noopener" hreflang="en">English <span class="mono" aria-hidden="true">↗</span></a>
+				<a class="resume__lang" href={site.resume.th} target="_blank" rel="noopener" hreflang="th" lang="th">ไทย <span class="mono" aria-hidden="true">↗</span></a>
+			</div>
 		</div>
 	</div>
 
@@ -170,12 +175,42 @@ import { site } from '../../data/site';
 		color: oklch(0.14 0.03 285);
 	}
 
-	.btn--ghost {
-		border-color: oklch(1 0 0 / 0.2);
+	/* One outlined button split into the label and a link per language. */
+	.resume {
+		display: flex;
+		align-items: stretch;
+		border: 1px solid oklch(1 0 0 / 0.2);
+		border-radius: var(--radius-sm);
+		font-size: 15px;
+		font-weight: 600;
 	}
 
-	.btn--ghost:hover {
-		border-color: var(--color-amber);
+	.resume__label {
+		display: flex;
+		align-items: center;
+		padding: 14px 16px 14px 22px;
+		color: var(--color-muted);
+	}
+
+	.resume__lang {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 14px 18px;
+		border-left: 1px solid oklch(1 0 0 / 0.14);
+		transition:
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	.resume__lang:last-child {
+		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+	}
+
+	.resume__lang:hover,
+	.resume__lang:focus-visible {
+		background: oklch(1 0 0 / 0.06);
+		color: var(--color-amber);
 	}
 
 	.hero__visual {

@@ -6,11 +6,16 @@ export const site = {
 	focus: "Web · Data · AI",
 	status: "Studying & building projects · Open to internships",
 	email: "alexander.sanford.contact@pm.me",
-	resume: "#",
+	// Résumé PDFs, one per language, made from src/data/resume.ts when the site builds.
+	// The path sets the file's URL and the name it saves under.
+	resume: {
+		en: "/Alexander-Sanford-Resume.pdf",
+		th: "/Alexander-Sanford-Resume-TH.pdf",
+	},
 	// IANA time zone for the "Local time" clock in the hero. Use undefined to show the visitor's time.
 	timeZone: "Asia/Bangkok" as string | undefined,
 	intro:
-		"I'm a 2nd year student in University and junior developer. I build full-stack web apps, and I explore data science, machine learning, and deep learning. Right now I'm focus on studying but still looking for internships",
+		"I'm a second year student in University and junior developer. I build full-stack web apps, and I explore data science, machine learning, and deep learning. Right now I'm focus on studying but still looking for internships",
 };
 
 export const nav = [
@@ -27,7 +32,8 @@ export const socials = [
 		href: "https://www.linkedin.com/in/patcharapolandalexnader",
 	},
 	{ label: "Kaggle", href: "https://kaggle.com/" },
-	{ label: "Résumé (PDF) (Not finished yet)", href: site.resume },
+	{ label: "Résumé (PDF) (Still on Update)", href: site.resume.en },
+	{ label: "Résumé ภาษาไทย (PDF)", href: site.resume.th },
 ];
 
 export const about = {

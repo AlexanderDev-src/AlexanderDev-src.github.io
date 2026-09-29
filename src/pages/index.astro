@@ -1,17 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/sections/Hero.astro';
-import Projects from '../components/sections/Projects.astro';
-import Skills from '../components/sections/Skills.astro';
-import About from '../components/sections/About.astro';
-import Contact from '../components/sections/Contact.astro';
+import Welcome from '../components/Welcome.astro';
 import { site } from '../data/site';
 ---
 
-<Layout title={`${site.name} — Junior Developer`} description={site.intro}>
-	<Hero />
-	<Projects />
-	<Skills />
-	<About />
-	<Contact />
+<Layout title={`Greetings — ${site.name}`} description={site.intro} bare>
+	<Welcome />
 </Layout>

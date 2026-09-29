@@ -4,7 +4,7 @@ import { site } from '../../data/site';
 
 <section class="container hero" aria-label="Introduction">
 	<div class="hero__text">
-		<p class="hero__meta">
+		<p class="hero__meta" data-depth>
 			<span>Junior Developer</span>
 			<span class="hero__sep" aria-hidden="true">✦</span>
 			<span>{site.focus}</span>
@@ -12,18 +12,21 @@ import { site } from '../../data/site';
 			<span>Local time <time id="local-time" data-tz={site.timeZone}>--:--</time></span>
 		</p>
 
-		<h1 class="hero__title">Hi, I'm <span class="gradient-text">{site.name.split(' ')[0]}.</span></h1>
+		<h1 class="hero__title">
+			<span class="hero__line" data-depth>Hi, I'm</span>{' '}
+			<span class="hero__line gradient-text" data-depth>{site.name.split(' ')[0]}.</span>
+		</h1>
 
-		<p class="hero__intro">{site.intro}</p>
+		<p class="hero__intro" data-depth>{site.intro}</p>
 
-		<div class="hero__actions">
+		<div class="hero__actions" data-depth>
 			<a class="btn btn--primary" href="#work">Explore my work <span class="mono" aria-hidden="true">→</span></a>
 			<a class="btn btn--ghost" href={site.resume}>Download résumé</a>
 		</div>
 	</div>
 
-	<div class="hero__visual">
-		<canvas id="blackhole" class="hero__hole" aria-hidden="true"></canvas>
+	<div class="hero__visual" data-depth>
+		<canvas id="blackhole" class="hero__hole" data-emerge aria-hidden="true"></canvas>
 		<span class="hero__scroll" aria-hidden="true">Scroll to explore ↓</span>
 	</div>
 </section>
@@ -41,6 +44,36 @@ import { site } from '../../data/site';
 		};
 		tick();
 		setInterval(tick, 30000);
+	}
+
+	// Parallax: while the hero scrolls away, each layer lags behind by its own amount (--lag), lower
+	// layers more, so they drift apart instead of into each other.
+	const hero = document.querySelector<HTMLElement>('.hero');
+	const layers = [...(hero?.querySelectorAll<HTMLElement>('[data-depth]') ?? [])].map((el) => ({
+		el,
+		lag: Number(getComputedStyle(el).getPropertyValue('--lag')) || 0,
+	}));
+
+	if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		let last = -1;
+		let queued = false;
+		const update = () => {
+			queued = false;
+			const y = Math.min(window.scrollY, hero.offsetHeight);
+			if (y === last) return;
+			last = y;
+			for (const { el, lag } of layers) el.style.translate = `0 ${(y * lag).toFixed(1)}px`;
+		};
+		window.addEventListener(
+			'scroll',
+			() => {
+				if (queued) return;
+				queued = true;
+				requestAnimationFrame(update);
+			},
+			{ passive: true },
+		);
+		update();
 	}
 </script>
 
@@ -84,6 +117,10 @@ import { site } from '../../data/site';
 
 	.hero__meta time {
 		font-variant-numeric: tabular-nums;
+	}
+
+	.hero__line {
+		display: inline-block;
 	}
 
 	.hero__title {
@@ -166,5 +203,62 @@ import { site } from '../../data/site';
 		font-size: 13px;
 		font-weight: 500;
 		color: var(--color-faint);
+	}
+
+	/* Depth of each layer. --depth sets how far it flies in on arrival (nearer flies further),
+	   --lag how much it trails when scrolled (see the script). */
+	.hero__meta {
+		--depth: 0.35;
+		--delay: 0.45s;
+		--lag: 0;
+	}
+
+	.hero__line:first-child {
+		--depth: 0.7;
+		--delay: 0.55s;
+		--lag: 0.04;
+	}
+
+	.hero__line:last-child {
+		--depth: 1;
+		--delay: 0.62s;
+		--lag: 0.08;
+	}
+
+	.hero__intro {
+		--depth: 0.5;
+		--delay: 0.75s;
+		--lag: 0.14;
+	}
+
+	.hero__actions {
+		--depth: 0.4;
+		--delay: 0.85s;
+		--lag: 0.2;
+	}
+
+	/* The hole is deepest. No blur and no scale on it: cosmos.ts measures its canvas on load. */
+	.hero__visual {
+		--depth: 0.12;
+		--delay: 0s;
+		--blur: 0px;
+		--lag: 0.22;
+	}
+
+	/* Arrival, just out of the black hole: the layers slide in from its side at once, but each
+	   travels a different distance, so the page reads as layers at different depths.
+	   The drift on scroll uses `translate`, so it adds to this `transform`. */
+	@media (prefers-reduced-motion: no-preference) {
+		.hero [data-depth] {
+			animation: hero-emerge 1.6s cubic-bezier(0.16, 1, 0.3, 1) var(--delay) backwards;
+		}
+	}
+
+	@keyframes hero-emerge {
+		from {
+			opacity: 0;
+			filter: blur(var(--blur, 10px));
+			transform: translate(calc(var(--depth) * 200px), calc(var(--depth) * 28px));
+		}
 	}
 </style>

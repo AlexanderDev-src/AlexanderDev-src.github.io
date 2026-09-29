@@ -45,6 +45,8 @@ interface Shoot {
 
 const TAU = Math.PI * 2;
 const ICON_PX = 96;
+// The event horizon's radius, as a share of the black hole canvas's shorter side.
+export const HORIZON = 0.11;
 
 // Rasterise each logo once so the loop draws a bitmap, not an SVG. Black logos become white.
 function loadIcons(onLoad: () => void): Icon[] {
@@ -102,6 +104,14 @@ export function startCosmos() {
 	let warp = 0;
 	let speed = 0;
 	let lastScroll = 0;
+	// Collapse: the welcome page's Enter (Welcome.astro) sends `cosmos:collapse` with a duration in
+	// seconds. Over that time every star, the disk, and the orbiting icons fall into the hole.
+	// Emerge is the same run backwards, on load, when the hole canvas has `data-emerge` (Hero.astro).
+	let fallAt = -1;
+	let fallFor = 1;
+	let inward = false;
+	let fall = 0;
+	let spin = 0;
 
 	const renderStill = () => {
 		if (still) draw(0, 0);
@@ -159,7 +169,7 @@ export function startCosmos() {
 	}
 
 	function makeDisk() {
-		R = Math.min(hw, hh) * 0.11;
+		R = Math.min(hw, hh) * HORIZON;
 		orbs = icons.map((icon, i) => ({
 			icon,
 			a: Math.random() * TAU,
@@ -206,11 +216,16 @@ export function startCosmos() {
 	function drawOrbs(x: CanvasRenderingContext2D, cx: number, cy: number, front: boolean, dt: number) {
 		const outer = R * 4.4;
 		for (const o of orbs) {
+			if (o.r <= 0) continue;
 			if (!front) {
 				const k = R / o.r;
 				o.a += dt * 0.55 * k ** 1.3;
 				o.r -= dt * R * (0.09 + 0.5 * k * k);
 				o.spin += dt * (0.4 + 2.5 * k * k);
+				if (o.r < R * 1.02 && inward) {
+					o.r = 0;
+					continue;
+				}
 				if (o.r < R * 1.02) {
 					o.r = outer;
 					o.a = Math.random() * TAU;
@@ -220,13 +235,15 @@ export function startCosmos() {
 			}
 			const sa = Math.sin(o.a);
 			if (sa > 0 !== front) continue;
-			const ex = Math.cos(o.a) * o.r;
-			const ey = sa * o.r * o.tilt;
+			// Falling or emerging, the orbit is squeezed onto the horizon like the disk.
+			const radius = o.r - (o.r - R) * fall;
+			const ex = Math.cos(o.a) * radius;
+			const ey = sa * radius * o.tilt;
 			const cr = Math.cos(o.rot);
 			const sr = Math.sin(o.rot);
 			const px = cx + ex * cr - ey * sr;
 			const py = cy + ex * sr + ey * cr;
-			const near = Math.min(1, Math.max(0, (o.r - R * 1.05) / (R * 1.2)));
+			const near = Math.min(1, Math.max(0, (radius - R * 1.05) / (R * 1.2)));
 			const born = Math.min(1, (outer - o.r) / (R * 0.4));
 			const size = R * 0.42 * (0.35 + 0.65 * near) * (0.85 + 0.15 * sa * (front ? 1 : -1));
 			x.save();
@@ -254,7 +271,7 @@ export function startCosmos() {
 		}
 	}
 
-	function drawHole(x: CanvasRenderingContext2D, sec: number, dt: number) {
+	function drawHole(x: CanvasRenderingContext2D, dt: number) {
 		x.setTransform(dpr, 0, 0, dpr, 0, 0);
 		x.clearRect(0, 0, hw, hh);
 		if (!cosmos.showBlackHole) return;
@@ -276,11 +293,13 @@ export function startCosmos() {
 		const particles = (front: boolean) => {
 			x.globalCompositeOperation = 'lighter';
 			for (const p of disk) {
-				const a = p.a + sec * p.v;
+				const a = p.a + spin * p.v;
 				const sa = Math.sin(a);
 				if (sa > 0 !== front) continue;
-				const ex = Math.cos(a) * p.r;
-				const ey = sa * (p.r * tilt) + p.j;
+				// Falling or emerging, the disk is squeezed onto the horizon.
+				const pr = p.r - (p.r - R) * fall;
+				const ex = Math.cos(a) * pr;
+				const ey = sa * (pr * tilt) + p.j;
 				const px = cx + ex * cr - ey * sr;
 				const py = cy + ex * sr + ey * cr;
 				const boost = 0.6 + 0.4 * Math.cos(a);
@@ -292,8 +311,10 @@ export function startCosmos() {
 			x.globalCompositeOperation = 'source-over';
 		};
 
+		// Everything orbits faster near the horizon, and fastest while falling in.
+		const odt = dt * (1 + (inward ? 24 : 4) * fall);
 		particles(false);
-		drawOrbs(x, cx, cy, false, dt);
+		drawOrbs(x, cx, cy, false, odt);
 
 		x.save();
 		x.translate(cx, cy);
@@ -318,7 +339,14 @@ export function startCosmos() {
 		x.restore();
 
 		particles(true);
-		drawOrbs(x, cx, cy, true, dt);
+		drawOrbs(x, cx, cy, true, odt);
+	}
+
+	// Where a point ends up when it is `q` of the way into the hole: pulled in along a tightening spiral.
+	function sink(px: number, py: number, cx: number, cy: number, q: number) {
+		const r = Math.hypot(px - cx, py - cy) * (1 - q);
+		const a = Math.atan2(py - cy, px - cx) + q * q * 2.4;
+		return [cx + Math.cos(a) * r, cy + Math.sin(a) * r, r];
 	}
 
 	function draw(sec: number, dt: number) {
@@ -333,6 +361,21 @@ export function startCosmos() {
 			warp += ((warping ? 1 : 0) - warp) * (1 - Math.exp(-dt * 6));
 		}
 		lastScroll = scroll;
+		if (fallAt >= 0) {
+			const p = Math.min(1, Math.max(0, (sec - fallAt) / fallFor));
+			// Falling in speeds up; emerging bursts out, then settles.
+			fall = inward ? p ** 2 : (1 - p) ** 2;
+		}
+		spin += dt * (1 + 6 * fall);
+
+		// The hole's centre on screen, which the stars fall towards.
+		let fx = w / 2;
+		let fy = h / 2;
+		if (fall > 0 && hole) {
+			const rect = hole.getBoundingClientRect();
+			fx = rect.left + rect.width / 2 + mouse.x * 14;
+			fy = rect.top + rect.height / 2 + mouse.y * 14;
+		}
 
 		x.setTransform(dpr, 0, 0, dpr, 0, 0);
 		x.fillStyle = 'oklch(0.08 0.015 285)';
@@ -341,10 +384,10 @@ export function startCosmos() {
 		const neb = cosmos.nebulaIntensity / 60;
 		if (nebula && neb > 0) {
 			const oy = -((scroll * 0.06) % (h * 0.6));
-			x.globalAlpha = Math.min(1, neb);
+			x.globalAlpha = Math.min(1, neb) * (1 - fall);
 			x.drawImage(nebula, mouse.x * -20, oy + mouse.y * -20, w, h * 1.6);
 			if (neb > 1) {
-				x.globalAlpha = neb - 1;
+				x.globalAlpha = (neb - 1) * (1 - fall);
 				x.drawImage(nebula, mouse.x * -20, oy + mouse.y * -20, w, h * 1.6);
 			}
 			x.globalAlpha = 1;
@@ -355,6 +398,21 @@ export function startCosmos() {
 			const py = (((s.y * h - scroll * s.z * 0.25 - mouse.y * s.z * 40) % h) + h) % h;
 			x.globalAlpha = s.a * (0.55 + 0.45 * Math.sin(sec * s.ts + s.tw));
 			x.fillStyle = s.c;
+			if (fall > 0) {
+				// Near stars fall first. The streak runs from a moment ago to now, and fades at the horizon.
+				const q = Math.min(1, fall * (1 + 0.6 * s.z));
+				const [x0, y0] = sink(px, py, fx, fy, Math.max(0, q - 0.07));
+				const [x1, y1, r] = sink(px, py, fx, fy, q);
+				x.globalAlpha *= Math.min(1, r / (R * 1.3));
+				x.strokeStyle = s.c;
+				x.lineWidth = Math.max(0.8, s.r * 1.2);
+				x.lineCap = 'round';
+				x.beginPath();
+				x.moveTo(x0, y0);
+				x.lineTo(x1, y1);
+				x.stroke();
+				continue;
+			}
 			// The trail is where the star was ~90ms ago, so it points against the scroll.
 			const trail = Math.max(-260, Math.min(260, warp * speed * s.z * 0.25 * 0.09));
 			if (Math.abs(trail) > 2) {
@@ -375,7 +433,7 @@ export function startCosmos() {
 		}
 		x.globalAlpha = 1;
 
-		if (!still) {
+		if (!still && !fall) {
 			if (sec > nextShoot && !shoot) {
 				shoot = { x: Math.random() * w * 0.8 + w * 0.1, y: Math.random() * h * 0.4, t: 0, ang: 0.35 + Math.random() * 0.4 };
 			}
@@ -404,7 +462,7 @@ export function startCosmos() {
 			}
 		}
 
-		if (hx && holeVisible) drawHole(hx, sec, dt);
+		if (hx && holeVisible) drawHole(hx, dt);
 	}
 
 	resizeSpace();
@@ -437,7 +495,22 @@ export function startCosmos() {
 	window.addEventListener('jump:start', () => (warping = true));
 	window.addEventListener('jump:end', () => (warping = false));
 
+	if (hole?.hasAttribute('data-emerge')) {
+		fallAt = performance.now() / 1000;
+		fallFor = 1.8;
+		fall = 1;
+	}
+
+	// The mouse lets go of the view, so the hole settles at the centre of its canvas.
+	window.addEventListener('cosmos:collapse', (event) => {
+		fallAt = performance.now() / 1000;
+		fallFor = (event as CustomEvent<number>).detail || 2;
+		inward = true;
+		mouse.tx = mouse.ty = 0;
+	});
+
 	window.addEventListener('pointermove', (e) => {
+		if (inward) return;
 		mouse.tx = e.clientX / window.innerWidth - 0.5;
 		mouse.ty = e.clientY / window.innerHeight - 0.5;
 	});

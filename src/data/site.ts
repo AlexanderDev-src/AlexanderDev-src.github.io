@@ -232,6 +232,42 @@ export const projects: Project[] = [
 				src: "/projects/social-mental-health/what-if-social-media.gif",
 				caption: "What if: social media hours vs. DASS-21",
 			},
+			{
+				src: "/projects/social-mental-health/usage-vs-mental-health.png",
+				caption: "Kaggle data (synthetic): hours vs. mental health score",
+			},
+			{
+				src: "/projects/social-mental-health/q1-usage-dass.png",
+				caption: "Social media hours vs. DASS-21",
+			},
+			{
+				src: "/projects/social-mental-health/qr2-social-media-dass-dimension.png",
+				caption: "Social media hours and news days vs. each DASS-21 dimension",
+			},
+			{
+				src: "/projects/social-mental-health/q3-news-anxiety.png",
+				caption: "News days per week vs. DASS-21",
+			},
+			{
+				src: "/projects/social-mental-health/q4-content-type.png",
+				caption: "Content type vs. DASS-21",
+			},
+			{
+				src: "/projects/social-mental-health/q5-interaction-dass.png",
+				caption: "Daily habits vs. DASS-21 (correlations)",
+			},
+			{
+				src: "/projects/social-mental-health/3d-usage-sleep-dass.png",
+				caption: "Social media, sleep, and DASS-21: female vs. male",
+			},
+			{
+				src: "/projects/social-mental-health/q6-gpa-finance.png",
+				caption: "GPA and money vs. DASS-21",
+			},
+			{
+				src: "/projects/social-mental-health/qr7-finance-dass-dimension.png",
+				caption: "Money situation vs. each DASS-21 dimension",
+			},
 		],
 		code: "https://github.com/AlexanderDev-src/DataSci_Social_and_MentalHealth",
 	},

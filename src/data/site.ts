@@ -270,10 +270,7 @@ export const projects: Project[] = [
 			},
 		],
 		code: "https://github.com/AlexanderDev-src/DataSci_Social_and_MentalHealth",
-<<<<<<< HEAD
-=======
 		demo: "https://alexanderdev-src.github.io/DataSci_Social_and_MentalHealth/",
->>>>>>> ef27c8d (Add web presentation)
 	},
 ];
 

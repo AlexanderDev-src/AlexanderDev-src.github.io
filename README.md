@@ -57,7 +57,7 @@ All the text, links, projects, and skills live in one file: `src/data/site.ts`. 
 },
 ```
 
-A project with no photos gets placeholder images and a "not finished yet" note. Set `draft: true` to show the note even when it has photos, and `draftNote` to change its text.
+A project with no photos gets placeholder images and a "not finished yet" note. Set `draft: true` to show the note even when it has photos, and `draftNote` to change its text. Use `links` for other links on the card, such as a report: `links: [{ label: "Full report", href: "https://..." }]`.
 
 ### Background settings
 

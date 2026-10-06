@@ -41,6 +41,8 @@ export interface ResumeText {
 		experience: string;
 		projects: string;
 		skills: string;
+		// Stands in for "Present" in a project date like "Sep 2026 - Present" when dateLocale is set.
+		present: string;
 	};
 }
 
@@ -87,6 +89,7 @@ export const resume: Resume = {
 				experience: "Experience",
 				projects: "Projects",
 				skills: "Skills",
+				present: "Present",
 			},
 		},
 		th: {
@@ -100,7 +103,7 @@ export const resume: Resume = {
 				{
 					title: "วิทยาศาสตรบัณฑิต สาขาวิชาวิทยาการคอมพิวเตอร์",
 					place: "มหาวิทยาลัยขอนแก่น",
-					when: "2025 — ปัจจุบัน",
+					when: "2025 - ปัจจุบัน",
 				},
 			],
 			experience: [],
@@ -147,6 +150,7 @@ export const resume: Resume = {
 				experience: "ประสบการณ์",
 				projects: "โปรเจกต์",
 				skills: "ทักษะ",
+				present: "ปัจจุบัน",
 			},
 		},
 	},

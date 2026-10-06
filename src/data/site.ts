@@ -111,6 +111,13 @@ export const projectTime = (date: string) => {
 	return Number(match[2]) * 12 + month;
 };
 
+// When a project was finished, for sorting. A range like "Aug 2026 - Oct 2026" counts by its end,
+// and one that ends in "Present" comes before every date.
+export const projectEnd = (date: string) => {
+	const end = date.split(/\s+[-–—]\s+/).at(-1) ?? date;
+	return /^present$/i.test(end) ? Number.MAX_SAFE_INTEGER : projectTime(end);
+};
+
 // Filter buttons above the projects. Each one matches a project's topics or tags (case does not matter).
 // A button only shows when at least one project matches it, so topics with no projects yet can stay here.
 export const projectFilters = {
@@ -134,7 +141,8 @@ export const projectsShown = 4;
 export const projectFilterKeys = (project: Project) =>
 	[...(project.topics ?? []), ...project.tags].map((key) => key.toLowerCase());
 
-// Shown newest first by date, so the order here does not matter.
+// Shown by when they were finished, newest first, with the ones still going ("Present") at the front.
+// The order here only decides between projects that finished in the same month.
 export const projects: Project[] = [
 	{
 		name: "LexiLog",
@@ -187,7 +195,7 @@ export const projects: Project[] = [
 	},
 	{
 		name: "Nabla",
-		year: "Sep 2026",
+		year: "Sep 2026 - Present",
 		kind: "Neural Network",
 		topics: ["Neural Network", "Deep Learning"],
 		draft: true,
@@ -220,7 +228,7 @@ export const projects: Project[] = [
 	},
 	{
 		name: "Social Media & Mental Health",
-		year: "Aug 2026",
+		year: "Aug 2026 - Oct 2026",
 		kind: "Data Science · Year 2",
 		topics: ["Data Science"],
 		description:
@@ -285,7 +293,7 @@ export const projects: Project[] = [
 
 export const timeline = [
 	{
-		when: "2025 — Now",
+		when: "2025 - Present",
 		title: "B.Sc. Computer Science",
 		place: "Khon Kean University",
 	},

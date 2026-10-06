@@ -2,9 +2,9 @@
 import SectionHeading from '../SectionHeading.astro';
 import ProjectCard from '../ProjectCard.astro';
 import ProjectGallery from '../ProjectGallery.astro';
-import { projectFilterKeys, projectFilters, projects, projectsShown, projectTime } from '../../data/site';
+import { projectEnd, projectFilterKeys, projectFilters, projects, projectsShown } from '../../data/site';
 
-const sorted = [...projects].sort((a, b) => projectTime(b.year) - projectTime(a.year));
+const sorted = [...projects].sort((a, b) => projectEnd(b.year) - projectEnd(a.year));
 
 // Filter buttons with how many projects each one matches. Filters that match nothing are left out.
 const filterGroup = (names: string[]) =>

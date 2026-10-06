@@ -5,7 +5,7 @@ import { join } from "node:path";
 import * as fontkit from "fontkit";
 import PDFDocument from "pdfkit";
 import { resume, type ResumeEntry, type ResumeLang } from "../data/resume";
-import { projects, projectTime } from "../data/site";
+import { projectEnd, projects, projectTime } from "../data/site";
 
 const PAGE = { size: "A4", marginX: 50, marginY: 42 } as const;
 
@@ -86,13 +86,21 @@ const withoutProtocol = (url: string) => url.replace(/^(mailto:|https?:\/\/(www\
 
 const MONTH_DATE = /^([a-z]{3})[a-z]*\s+(\d{4})$/i;
 
-const formatDate = (date: string, locale?: string) => {
-	const match = date.match(MONTH_DATE);
-	if (!locale || !match) return date;
+const formatMonth = (date: string, locale: string) => {
+	if (!MONTH_DATE.test(date)) return date;
 	const time = projectTime(date);
 	return new Intl.DateTimeFormat(locale, { month: "short", year: "numeric" }).format(
 		new Date(Math.floor(time / 12), time % 12),
 	);
+};
+
+// Rewrites each end of a range like "Aug 2026 - Oct 2026" on its own, and "Present" becomes the résumé's own word.
+const formatDate = (date: string, locale: string | undefined, present: string) => {
+	if (!locale) return date;
+	return date
+		.split(/(\s+[-–—]\s+)/)
+		.map((part) => (/^present$/i.test(part) ? present : formatMonth(part, locale)))
+		.join("");
 };
 
 export const resumePdf = (lang: ResumeLang) =>
@@ -254,13 +262,13 @@ export const resumePdf = (lang: ResumeLang) =>
 		// Projects: the names in resume.projects, or every project newest first.
 		const chosen = resume.projects.length
 			? resume.projects.flatMap((name) => projects.filter((project) => project.name === name))
-			: [...projects].sort((a, b) => projectTime(b.year) - projectTime(a.year));
+			: [...projects].sort((a, b) => projectEnd(b.year) - projectEnd(a.year));
 		if (chosen.length) {
 			section(text.labels.projects);
 			for (const project of chosen) {
 				const own = text.projects[project.name] ?? {};
 				const link = project.code ?? project.demo;
-				entryHeader(project.name, own.kind ?? project.kind, formatDate(project.year, text.dateLocale));
+				entryHeader(project.name, own.kind ?? project.kind, formatDate(project.year, text.dateLocale, text.labels.present));
 				write([{ text: own.description ?? project.description }]);
 				doc.moveDown(0.1);
 				write([

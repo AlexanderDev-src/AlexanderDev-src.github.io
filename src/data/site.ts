@@ -71,6 +71,8 @@ export interface Project {
 	draftNote?: string;
 	demo?: string;
 	code?: string;
+	// Other links for the card, like a report or a paper. Shown between the demo and code links.
+	links?: { label: string; href: string }[];
 }
 
 // Shown on projects that still use placeholder photos.
@@ -221,11 +223,8 @@ export const projects: Project[] = [
 		year: "Aug 2026",
 		kind: "Data Science · Year 2",
 		topics: ["Data Science"],
-		draft: true,
-		draftNote:
-			"Still analysing the survey one research question at a time. The full report isn't written yet.",
 		description:
-			"A study of how time on social media, and the kind of content, relate to university students' mental well-being. The public Kaggle datasets turned out to be synthetic, so I ran my own survey at Khon Kaen University (121 students, Thai DASS-21) and analysed it in Python. So far, hours online show no link to depression, anxiety, or stress. Money problems show the strongest link.",
+			"A study of how time on social media, and the kind of content, relate to university students' mental well-being. The public Kaggle datasets turned out to be synthetic, so I ran my own survey at Khon Kaen University (121 students, Thai DASS-21) and analysed it in Python. Hours online show no link to depression, anxiety, or stress. Money problems show the strongest link. The results are in a full report and a paper in the AUCC conference format.",
 		tags: ["Python", "pandas", "SciPy", "Matplotlib", "LaTeX"],
 		photos: [
 			{
@@ -271,6 +270,16 @@ export const projects: Project[] = [
 		],
 		code: "https://github.com/AlexanderDev-src/DataSci_Social_and_MentalHealth",
 		demo: "https://alexanderdev-src.github.io/DataSci_Social_and_MentalHealth/",
+		links: [
+			{
+				label: "Full report",
+				href: "https://github.com/AlexanderDev-src/DataSci_Social_and_MentalHealth/blob/main/Report_Full-report-0209Update1.pdf",
+			},
+			{
+				label: "AUCC paper",
+				href: "https://github.com/AlexanderDev-src/DataSci_Social_and_MentalHealth/blob/main/Report_aucc.pdf",
+			},
+		],
 	},
 ];
 
@@ -287,7 +296,6 @@ const DEVICON = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/";
 
 // Black logos that need inverting to show on the dark background.
 export const darkIcons = [
-	"rust",
 	"nextjs",
 	"express",
 	"github",
@@ -307,7 +315,6 @@ export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: "Languages & Frameworks",
 		items: [
-			{ id: "rust", name: "Rust" },
 			{ id: "java", name: "Java" },
 			{ id: "cplusplus", name: "C++" },
 			{ id: "c", name: "C" },
@@ -383,7 +390,6 @@ export const cosmos = {
 	showOrbitIcons: true,
 	// Devicon ids that spiral into the black hole, with a short label shown if the icon fails to load.
 	orbitIcons: [
-		["rust", "Rs"],
 		["java", "Java"],
 		["cplusplus", "C++"],
 		["c", "C"],

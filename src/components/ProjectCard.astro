@@ -4,7 +4,7 @@ import { draftNote as defaultNote, placeholderPhotos, projectFilterKeys, type Pr
 // hidden: start collapsed behind the "Show more" button.
 type Props = Project & { hidden?: boolean };
 
-const { name, year, kind, description, tags, image, photos, demo, code, draftNote, hidden } = Astro.props;
+const { name, year, kind, description, tags, image, photos, demo, code, links, draftNote, hidden } = Astro.props;
 
 // Without its own photos or image, a project shows placeholders and is a draft unless it says otherwise.
 const draft = Astro.props.draft ?? (!photos?.length && !image);
@@ -51,6 +51,7 @@ const cover = gallery.slice(0, 3);
 		</ul>
 		<div class="card__links">
 			{demo && <a href={demo}>Live demo <span class="mono" aria-hidden="true">↗</span></a>}
+			{links?.map((link) => <a href={link.href}>{link.label} <span class="mono" aria-hidden="true">↗</span></a>)}
 			{code && <a class="card__code" href={code}>Code <span class="mono" aria-hidden="true">↗</span></a>}
 		</div>
 	</div>
@@ -238,7 +239,8 @@ const cover = gallery.slice(0, 3);
 
 	.card__links {
 		display: flex;
-		gap: 24px;
+		flex-wrap: wrap;
+		gap: 8px 24px;
 		padding-top: 4px;
 		font-size: 15px;
 		font-weight: 500;

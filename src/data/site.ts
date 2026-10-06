@@ -287,7 +287,6 @@ const DEVICON = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/";
 
 // Black logos that need inverting to show on the dark background.
 export const darkIcons = [
-	"rust",
 	"nextjs",
 	"express",
 	"github",
@@ -307,7 +306,6 @@ export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: "Languages & Frameworks",
 		items: [
-			{ id: "rust", name: "Rust" },
 			{ id: "java", name: "Java" },
 			{ id: "cplusplus", name: "C++" },
 			{ id: "c", name: "C" },
@@ -383,7 +381,6 @@ export const cosmos = {
 	showOrbitIcons: true,
 	// Devicon ids that spiral into the black hole, with a short label shown if the icon fails to load.
 	orbitIcons: [
-		["rust", "Rs"],
 		["java", "Java"],
 		["cplusplus", "C++"],
 		["c", "C"],

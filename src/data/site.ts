@@ -212,19 +212,27 @@ export const projects: Project[] = [
 	{
 		name: "Task API",
 		year: "Aug 2026",
-		kind: "REST API · Learning Rust",
+		kind: "REST API · Rust → TypeScript",
 		topics: ["Back-end"],
 		draft: true,
 		draftNote:
 			"Status: Working on a login system, but I don't have free time for it yet.",
 		description:
-			"A Task/Todo REST API I built to learn Rust, with ntex and PostgreSQL: create, list, update, and delete tasks with validation, status filters, paging, and one JSON error shape. It has a small React + TypeScript client and a 54-check acceptance script.",
-		tags: ["Rust", "ntex", "PostgreSQL", "React", "TypeScript", "Docker"],
+			"A Task/Todo REST API I first built in Rust with ntex to learn the language, now rebuilt in TypeScript on Bun and Elysia with Clean Architecture, still on PostgreSQL: create, list, update, and delete tasks with validation, status filters, due dates with a date-range filter, paging, and one JSON error shape. It has a small React + TypeScript client and an 86-check acceptance script.",
+		tags: [
+			"TypeScript",
+			"Bun",
+			"Elysia",
+			"Clean Architecture",
+			"PostgreSQL",
+			"React",
+			"Docker",
+		],
 		photos: [
 			{ src: "/projects/taskapi/taskapi1.png", caption: "Board" },
 			{ src: "/projects/taskapi/taskapi2.png", caption: "List" },
 		],
-		code: "https://github.com/AlexanderDev-src/rust-ntex-task-api",
+		code: "https://github.com/AlexanderDev-src/task-api",
 	},
 	{
 		name: "Social Media & Mental Health",

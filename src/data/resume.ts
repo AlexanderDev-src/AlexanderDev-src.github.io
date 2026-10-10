@@ -123,9 +123,9 @@ export const resume: Resume = {
 						"∇ : เอนจิน autodiff แบบ reverse-mode ขนาดเล็ก และไลบรารี Neural Network ด้วย C++23 แบบ header-only ไม่มี dependency ใด ๆ ได้ความแม่นยำ 98% บน MNIST",
 				},
 				"Task API": {
-					kind: "REST API · ฝึกเขียน Rust",
+					kind: "REST API · Rust → TypeScript",
 					description:
-						"REST API สำหรับจัดการงาน (Task/Todo) ที่สร้างขึ้นเพื่อเรียนรู้ Rust ด้วย ntex และ PostgreSQL: สร้าง แสดงรายการ แก้ไข และลบงาน พร้อมตรวจสอบข้อมูล กรองตามสถานะ แบ่งหน้า และใช้รูปแบบ JSON error เดียวกันทั้งหมด มีไคลเอนต์ขนาดเล็กด้วย React + TypeScript และสคริปต์ acceptance test 54 รายการ",
+						"REST API สำหรับจัดการงาน (Task/Todo) ที่เดิมสร้างขึ้นเพื่อเรียนรู้ Rust ด้วย ntex และปัจจุบันเขียนใหม่ด้วย TypeScript บน Bun และ Elysia ตามแนวทาง Clean Architecture โดยยังใช้ PostgreSQL: สร้าง แสดงรายการ แก้ไข และลบงาน พร้อมตรวจสอบข้อมูล กรองตามสถานะ กำหนดวันครบกำหนดและกรองตามช่วงวันที่ แบ่งหน้า และใช้รูปแบบ JSON error เดียวกันทั้งหมด มีไคลเอนต์ขนาดเล็กด้วย React + TypeScript และสคริปต์ acceptance test 86 รายการ",
 				},
 				"Social Media & Mental Health": {
 					kind: "Data Science · ปี 2",

@@ -199,7 +199,7 @@ export const projects: Project[] = [
 		kind: "Neural Network",
 		topics: ["Neural Network", "Deep Learning"],
 		draft: true,
-		draftNote: "Status 50%",
+		draftNote: "Status 50% >w<",
 		description:
 			"∇ : A tiny reverse-mode autodiff engine and neural network library in C++23. Header-only, zero dependencies, 98% on MNIST.",
 		tags: ["C++", "Neural Network", "Deep Learning"],

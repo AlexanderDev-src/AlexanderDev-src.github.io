@@ -309,8 +309,9 @@ export const timeline = [
 	},
 ];
 
-// Tech icons come from Devicon (MIT).
+// Tech icons come from Devicon (MIT) by default. Iconify covers what Devicon lacks.
 const DEVICON = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/";
+const ICONIFY = "https://api.iconify.design/";
 
 // Black logos that need inverting to show on the dark background.
 export const darkIcons = [
@@ -320,26 +321,38 @@ export const darkIcons = [
 	"markdown",
 	"latex",
 	"astro",
+	"rust",
 ];
 
-export const deviconUrl = (id: string) => `${DEVICON}${id}/${id}-original.svg`;
+// A plain id is a Devicon icon, "set:name" is an Iconify icon (https://icon-sets.iconify.design),
+// and anything with a slash is a URL or a file in public/.
+export const iconUrl = (icon: string) => {
+	if (icon.includes("/")) return icon;
+	if (icon.includes(":")) return `${ICONIFY}${icon.replace(":", "/")}.svg`;
+	return `${DEVICON}${icon}/${icon}-original.svg`;
+};
 
 export interface Skill {
 	id: string;
 	name: string;
+	// Set when the icon is not the Devicon one for `id`.
+	icon?: string;
 }
 
 export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: "Languages & Frameworks",
 		items: [
-			{ id: "java", name: "Java" },
 			{ id: "cplusplus", name: "C++" },
-			{ id: "c", name: "C" },
 			{ id: "python", name: "Python" },
+			{ id: "rust", name: "Rust" },
+			{ id: "go", name: "Golang" },
 			{ id: "typescript", name: "TypeScript" },
+			{ id: "elysia", name: "Elysia", icon: "thesvg-color:elysiajs" },
 			{ id: "javascript", name: "JavaScript" },
 			{ id: "react", name: "React" },
+			{ id: "c", name: "C" },
+			{ id: "java", name: "Java" },
 		],
 	},
 	{
@@ -406,7 +419,7 @@ export const cosmos = {
 	nebulaIntensity: 20, // 0–120
 	showBlackHole: true,
 	showOrbitIcons: true,
-	// Devicon ids that spiral into the black hole, with a short label shown if the icon fails to load.
+	// Icons that spiral into the black hole (same forms as iconUrl), with a short label shown if the icon fails to load.
 	orbitIcons: [
 		["java", "Java"],
 		["cplusplus", "C++"],
@@ -423,5 +436,8 @@ export const cosmos = {
 		["tensorflow", "TF"],
 		["git", "Git"],
 		["neovim", "Nv"],
+		["rust", "Ru"],
+		["thesvg-color:elysiajs", "Elysia"],
+		["go", "Go"],
 	],
 };

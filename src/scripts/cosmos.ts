@@ -1,6 +1,6 @@
 // Space background (stars, nebula, shooting stars) and the hero black hole.
 // Both canvases share one requestAnimationFrame loop.
-import { cosmos, darkIcons, deviconUrl } from '../data/site';
+import { cosmos, darkIcons, iconUrl } from '../data/site';
 
 interface Star {
 	x: number;
@@ -71,7 +71,7 @@ function loadIcons(onLoad: () => void): Icon[] {
 				// Keep the text label fallback.
 			}
 		};
-		img.src = deviconUrl(id);
+		img.src = iconUrl(id);
 		return icon;
 	});
 }

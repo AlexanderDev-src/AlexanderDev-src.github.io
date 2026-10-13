@@ -1,6 +1,6 @@
 ---
 import SectionHeading from '../SectionHeading.astro';
-import { skills, darkIcons, deviconUrl } from '../../data/site';
+import { skills, darkIcons, iconUrl } from '../../data/site';
 ---
 
 <section id="skills" class="container skills">
@@ -16,7 +16,7 @@ import { skills, darkIcons, deviconUrl } from '../../data/site';
 							<li class="skills__item">
 								<span class="skills__tile">
 									<img
-										src={deviconUrl(item.id)}
+										src={iconUrl(item.icon ?? item.id)}
 										alt=""
 										width="30"
 										height="30"

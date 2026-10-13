@@ -31,7 +31,7 @@ export const socials = [
 	{ label: "GitHub", href: "https://github.com/AlexanderDev-src" },
 	{
 		label: "LinkedIn",
-		href: "https://www.linkedin.com/in/patcharapolandalexnader",
+		href: "https://www.linkedin.com/in/alexanderxorpatcharapol/",
 	},
 	{ label: "Kaggle", href: "https://kaggle.com/" },
 	{ label: "Résumé (PDF) (Still on Update)", href: site.resume.en },

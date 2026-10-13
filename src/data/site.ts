@@ -2,6 +2,8 @@
 
 export const site = {
 	name: "Alexander Sanford",
+	// Shown under the name in the hero.
+	realName: "Or : Patcharapol Pantawee (Thai)",
 	role: "Student · Junior Developer",
 	focus: "Web · Data · AI",
 	status: "Studying & building projects · Open to internships",

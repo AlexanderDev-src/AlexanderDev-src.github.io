@@ -1,10 +1,13 @@
 ---
 import { site, nav } from '../data/site';
+
+// The welcome page.
+const welcome = import.meta.env.BASE_URL;
 ---
 
 <header class="header">
 	<nav aria-label="Primary" class="container header__inner">
-		<a href="#top" class="header__logo">
+		<a href={welcome} class="header__logo" title="Back to the welcome page">
 			<span class="header__mark" aria-hidden="true"></span>
 			{site.name.toUpperCase()}
 		</a>

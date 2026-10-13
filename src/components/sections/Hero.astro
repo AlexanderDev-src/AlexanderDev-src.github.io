@@ -12,10 +12,13 @@ import { site } from '../../data/site';
 			<span>Local time <time id="local-time" data-tz={site.timeZone}>--:--</time></span>
 		</p>
 
-		<h1 class="hero__title">
-			<span class="hero__line" data-depth>Hi, I'm</span>{' '}
-			<span class="hero__line gradient-text" data-depth>{site.name.split(' ')[0]}.</span>
-		</h1>
+		<div class="hero__name">
+			<h1 class="hero__title">
+				<span class="hero__line" data-depth>Hi, I'm</span>{' '}
+				<span class="hero__line gradient-text" data-depth>{site.name.split(' ')[0]}.</span>
+			</h1>
+			<p class="hero__realname" data-depth>{site.realName}</p>
+		</div>
 
 		<p class="hero__intro" data-depth>{site.intro}</p>
 
@@ -135,6 +138,22 @@ import { site } from '../../data/site';
 		font-size: min(clamp(52px, 8.4vw, 128px), (100vw - 2 * var(--gutter)) / 8.4);
 		line-height: 0.92;
 		letter-spacing: -0.035em;
+	}
+
+	/* Keeps the real name close under the title, tighter than the gap between the other blocks. */
+	.hero__name {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(12px, 1.6vw, 20px);
+	}
+
+	.hero__realname {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: clamp(18px, 2.1vw, 28px);
+		line-height: 1.2;
+		letter-spacing: 0.01em;
+		color: var(--color-text-soft);
 	}
 
 	.hero__intro {
@@ -258,6 +277,12 @@ import { site } from '../../data/site';
 		--depth: 1;
 		--delay: 0.62s;
 		--lag: 0.08;
+	}
+
+	.hero__realname {
+		--depth: 0.6;
+		--delay: 0.68s;
+		--lag: 0.11;
 	}
 
 	.hero__intro {

@@ -305,7 +305,7 @@ export const timeline = [
 	{
 		when: "2025 - Present",
 		title: "B.Sc. Computer Science",
-		place: "Khon Kean University",
+		place: "Khon Kaen University",
 	},
 ];
 

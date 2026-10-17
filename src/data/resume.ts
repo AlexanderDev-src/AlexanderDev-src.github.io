@@ -65,7 +65,7 @@ export const resume: Resume = {
 		social("GitHub"),
 		social("LinkedIn"),
 	],
-	projects: ["Nabla", "LexiLog"],
+	projects: ["Nabla", "Social Media & Mental Health", "LexiLog"],
 	skills: skills.map((group) => ({
 		group: group.group,
 		items: group.items.map((item) => item.name),

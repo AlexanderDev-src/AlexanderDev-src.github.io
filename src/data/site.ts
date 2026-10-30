@@ -198,17 +198,16 @@ export const projects: Project[] = [
 	},
 	{
 		name: "Nabla",
-		year: "Sep 2026 - Present",
+		year: "Sep 2026 - 31 Oct 2026",
 		kind: "Neural Network",
 		topics: ["Neural Network", "Deep Learning"],
-		draft: true,
-		draftNote: "Status 50% >w<",
 		description:
 			"∇ : A tiny reverse-mode autodiff engine and neural network library in C++23. Header-only, zero dependencies, 98% on MNIST.",
 		tags: ["C++", "Neural Network", "Deep Learning"],
 		photos: [
-			{ src: "/projects/nabla/1.png", caption: "autograd" },
-			{ src: "/projects/nabla/2.png", caption: "cpp impl" },
+			{ src: "/projects/nabla/1.png", caption: "MNIST predictions" },
+			{ src: "/projects/nabla/2.png", caption: "computation graph" },
+			{ src: "/projects/nabla/3.png", caption: "nabla vs PyTorch" },
 		],
 		code: "https://github.com/AlexanderDev-src/nabla",
 	},

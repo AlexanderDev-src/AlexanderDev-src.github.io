@@ -103,14 +103,15 @@ const MONTHS = [
 	"dec",
 ];
 
-// Turns a project date like "Sep 2026" or "2026" into a number for sorting. A year alone counts as January.
+// Turns a project date like "31 Oct 2026", "Sep 2026" or "2026" into a number for sorting.
+// The day is optional: a month alone counts as its 1st, and a year alone as 1 January.
 export const projectTime = (date: string) => {
-	const match = date.match(/(?:([a-z]{3})[a-z]*\s+)?(\d{4})/i);
+	const match = date.match(/(?:(\d{1,2})\s+)?(?:([a-z]{3})[a-z]*\s+)?(\d{4})/i);
 	if (!match) return 0;
-	const month = match[1]
-		? Math.max(MONTHS.indexOf(match[1].toLowerCase()), 0)
+	const month = match[2]
+		? Math.max(MONTHS.indexOf(match[2].toLowerCase()), 0)
 		: 0;
-	return Number(match[2]) * 12 + month;
+	return Date.UTC(Number(match[3]), month, Number(match[1] ?? 1));
 };
 
 // When a project was finished, for sorting. A range like "Aug 2026 - Oct 2026" counts by its end,

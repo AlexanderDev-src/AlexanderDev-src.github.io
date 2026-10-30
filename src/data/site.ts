@@ -103,14 +103,15 @@ const MONTHS = [
 	"dec",
 ];
 
-// Turns a project date like "Sep 2026" or "2026" into a number for sorting. A year alone counts as January.
+// Turns a project date like "31 Oct 2026", "Sep 2026" or "2026" into a number for sorting.
+// The day is optional: a month alone counts as its 1st, and a year alone as 1 January.
 export const projectTime = (date: string) => {
-	const match = date.match(/(?:([a-z]{3})[a-z]*\s+)?(\d{4})/i);
+	const match = date.match(/(?:(\d{1,2})\s+)?(?:([a-z]{3})[a-z]*\s+)?(\d{4})/i);
 	if (!match) return 0;
-	const month = match[1]
-		? Math.max(MONTHS.indexOf(match[1].toLowerCase()), 0)
+	const month = match[2]
+		? Math.max(MONTHS.indexOf(match[2].toLowerCase()), 0)
 		: 0;
-	return Number(match[2]) * 12 + month;
+	return Date.UTC(Number(match[3]), month, Number(match[1] ?? 1));
 };
 
 // When a project was finished, for sorting. A range like "Aug 2026 - Oct 2026" counts by its end,
@@ -197,17 +198,16 @@ export const projects: Project[] = [
 	},
 	{
 		name: "Nabla",
-		year: "Sep 2026 - Present",
+		year: "Sep 2026 - 31 Oct 2026",
 		kind: "Neural Network",
 		topics: ["Neural Network", "Deep Learning"],
-		draft: true,
-		draftNote: "Status 50% >w<",
 		description:
 			"∇ : A tiny reverse-mode autodiff engine and neural network library in C++23. Header-only, zero dependencies, 98% on MNIST.",
 		tags: ["C++", "Neural Network", "Deep Learning"],
 		photos: [
-			{ src: "/projects/nabla/1.png", caption: "autograd" },
-			{ src: "/projects/nabla/2.png", caption: "cpp impl" },
+			{ src: "/projects/nabla/1.png", caption: "MNIST predictions" },
+			{ src: "/projects/nabla/2.png", caption: "computation graph" },
+			{ src: "/projects/nabla/3.png", caption: "nabla vs PyTorch" },
 		],
 		code: "https://github.com/AlexanderDev-src/nabla",
 	},

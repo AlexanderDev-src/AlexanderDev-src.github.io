@@ -84,14 +84,17 @@ const fontRuns = (text: string, weight: Weight) => {
 
 const withoutProtocol = (url: string) => url.replace(/^(mailto:|https?:\/\/(www\.)?)/, "").replace(/\/$/, "");
 
-const MONTH_DATE = /^([a-z]{3})[a-z]*\s+(\d{4})$/i;
+const MONTH_DATE = /^(\d{1,2}\s+)?([a-z]{3})[a-z]*\s+(\d{4})$/i;
 
 const formatMonth = (date: string, locale: string) => {
-	if (!MONTH_DATE.test(date)) return date;
-	const time = projectTime(date);
-	return new Intl.DateTimeFormat(locale, { month: "short", year: "numeric" }).format(
-		new Date(Math.floor(time / 12), time % 12),
-	);
+	const match = date.match(MONTH_DATE);
+	if (!match) return date;
+	return new Intl.DateTimeFormat(locale, {
+		day: match[1] ? "numeric" : undefined,
+		month: "short",
+		year: "numeric",
+		timeZone: "UTC",
+	}).format(projectTime(date));
 };
 
 // Rewrites each end of a range like "Aug 2026 - Oct 2026" on its own, and "Present" becomes the résumé's own word.

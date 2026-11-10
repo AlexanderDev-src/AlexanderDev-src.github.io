@@ -18,6 +18,7 @@ const cover = gallery.slice(0, 3);
 	<button
 		type="button"
 		class="card__media"
+		data-tilt="9"
 		data-gallery={JSON.stringify({ name, year, kind, draft, note, photos: gallery })}
 		aria-haspopup="dialog"
 		aria-label={`View photos of ${name}`}
@@ -79,7 +80,7 @@ const cover = gallery.slice(0, 3);
 		overflow: hidden;
 		border: 1px solid var(--hairline-strong);
 		border-radius: var(--radius-md);
-		background: oklch(0.17 0.03 290);
+		background: oklch(0.17 0.03 250);
 		color: inherit;
 		font-weight: 600;
 		cursor: pointer;
@@ -87,7 +88,7 @@ const cover = gallery.slice(0, 3);
 	}
 
 	.card__media:hover {
-		border-color: oklch(0.82 0.14 60 / 0.6);
+		border-color: oklch(0.88 0.045 240 / 0.6);
 	}
 
 	.card__collage {
@@ -121,14 +122,14 @@ const cover = gallery.slice(0, 3);
 	.card__shade {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, transparent 55%, oklch(0.08 0.015 285 / 0.85));
+		background: linear-gradient(180deg, transparent 55%, oklch(0.08 0.015 250 / 0.85));
 	}
 
 	.card__shade::after {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: oklch(0.08 0.015 285 / 0.45);
+		background: oklch(0.08 0.015 250 / 0.45);
 		opacity: 0;
 		transition: opacity 0.5s;
 	}
@@ -150,8 +151,8 @@ const cover = gallery.slice(0, 3);
 		top: 12px;
 		left: 12px;
 		padding: 4px 10px;
-		background: oklch(0.08 0.015 285 / 0.8);
-		color: var(--color-amber-soft);
+		background: oklch(0.08 0.015 250 / 0.8);
+		color: var(--color-accent-soft);
 		font-size: 12px;
 	}
 
@@ -159,8 +160,8 @@ const cover = gallery.slice(0, 3);
 		right: 12px;
 		bottom: 12px;
 		padding: 7px 14px;
-		background: oklch(0.95 0.01 290 / 0.92);
-		color: oklch(0.14 0.03 285);
+		background: oklch(0.95 0.01 250 / 0.92);
+		color: oklch(0.14 0.03 250);
 		font-size: 13px;
 	}
 
@@ -206,7 +207,7 @@ const cover = gallery.slice(0, 3);
 		max-width: 60ch;
 		font-size: 14px;
 		line-height: 1.6;
-		color: var(--color-amber-soft);
+		color: var(--color-accent-soft);
 	}
 
 	.card__dot {
@@ -215,7 +216,7 @@ const cover = gallery.slice(0, 3);
 		height: 7px;
 		margin-top: 0.55em;
 		border-radius: 50%;
-		background: var(--color-amber);
+		background: var(--color-accent);
 	}
 
 	.card__tags {
@@ -263,10 +264,10 @@ const cover = gallery.slice(0, 3);
 	}
 
 	.card__links .card__code {
-		color: oklch(0.8 0.02 290);
+		color: oklch(0.8 0.02 250);
 	}
 
 	.card__links .card__code:hover {
-		color: var(--color-amber);
+		color: var(--color-warm);
 	}
 </style>

@@ -52,6 +52,8 @@ import { site, about, timeline } from '../../data/site';
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
 		gap: clamp(40px, 6vw, 96px);
 		padding-block: clamp(80px, 14vh, 160px);
+		/* A soft dark patch keeps the text readable over the 3D scene. */
+		background: radial-gradient(ellipse at 50% 50%, oklch(0.08 0.02 250 / 0.74), transparent 70%);
 	}
 
 	.about__main {
@@ -83,12 +85,12 @@ import { site, about, timeline } from '../../data/site';
 
 	.about__ring--inner {
 		inset: -14px;
-		border: 1px solid oklch(0.72 0.17 300 / 0.45);
+		border: 1px solid oklch(0.7 0.1 250 / 0.45);
 	}
 
 	.about__ring--outer {
 		inset: -30px;
-		border: 1px dashed oklch(0.82 0.14 60 / 0.25);
+		border: 1px dashed oklch(0.88 0.045 240 / 0.25);
 	}
 
 	.about__satellite {
@@ -99,7 +101,7 @@ import { site, about, timeline } from '../../data/site';
 		height: 7px;
 		margin-left: -3px;
 		border-radius: 50%;
-		background: var(--color-amber);
+		background: var(--color-accent);
 	}
 
 	.about__photo {
@@ -111,10 +113,10 @@ import { site, about, timeline } from '../../data/site';
 		border-radius: 50%;
 		background: repeating-linear-gradient(
 			135deg,
-			oklch(0.19 0.03 290) 0 10px,
-			oklch(0.165 0.03 290) 10px 20px
+			oklch(0.19 0.03 250) 0 10px,
+			oklch(0.165 0.03 250) 10px 20px
 		);
-		box-shadow: 0 0 40px oklch(0.6 0.2 300 / 0.25);
+		box-shadow: 0 0 40px oklch(0.6 0.1 250 / 0.25);
 		font-size: 14px;
 		font-weight: 500;
 		color: var(--color-faint);
@@ -152,7 +154,7 @@ import { site, about, timeline } from '../../data/site';
 	}
 
 	.about__highlight {
-		color: var(--color-magenta);
+		color: var(--color-warm);
 	}
 
 	.about__bio {
@@ -188,7 +190,7 @@ import { site, about, timeline } from '../../data/site';
 		width: 9px;
 		height: 9px;
 		border-radius: 50%;
-		background: var(--color-magenta);
+		background: var(--color-warm);
 	}
 
 	.timeline__when {

@@ -104,7 +104,7 @@ const welcome = import.meta.env.BASE_URL;
 		position: sticky;
 		top: 0;
 		z-index: 10;
-		background: oklch(0.08 0.015 285 / 0.5);
+		background: oklch(0.08 0.015 250 / 0.5);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
 		border-bottom: 1px solid var(--hairline-soft);
@@ -148,10 +148,10 @@ const welcome = import.meta.env.BASE_URL;
 		width: 22px;
 		height: 22px;
 		border-radius: 50%;
-		background: oklch(0.06 0.01 285);
+		background: oklch(0.06 0.01 250);
 		box-shadow:
-			0 0 0 2px var(--color-amber),
-			0 0 16px 2px oklch(0.72 0.17 300 / 0.8);
+			0 0 0 2px var(--color-accent),
+			0 0 16px 2px oklch(0.7 0.1 250 / 0.8);
 	}
 
 	.header__links {
@@ -165,7 +165,7 @@ const welcome = import.meta.env.BASE_URL;
 	}
 
 	.header__links a[aria-current] {
-		color: var(--color-amber-soft);
+		color: var(--color-accent-soft);
 	}
 
 	.header__indicator {
@@ -175,7 +175,7 @@ const welcome = import.meta.env.BASE_URL;
 		width: 0;
 		height: 2px;
 		border-radius: 2px;
-		background: linear-gradient(90deg, var(--color-amber), var(--color-magenta), var(--color-violet));
+		background: linear-gradient(90deg, var(--color-accent), var(--color-warm));
 		opacity: 0;
 		pointer-events: none;
 		transition:
@@ -217,6 +217,6 @@ const welcome = import.meta.env.BASE_URL;
 		height: 7px;
 		margin-top: calc((1.5em - 7px) / 2);
 		border-radius: 50%;
-		background: var(--color-amber);
+		background: var(--color-status);
 	}
 </style>

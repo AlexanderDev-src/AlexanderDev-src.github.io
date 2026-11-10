@@ -4,8 +4,9 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 gsap.registerPlugin(ScrollToPlugin);
 
 // In-page links (header, hero, footer) fly to their section instead of the browser's plain
-// smooth scroll: the page eases out and back in, the stars streak past (cosmos.ts listens for
-// `jump:start` / `jump:end`), and the section's [data-arrive] parts rise into place as it lands.
+// smooth scroll: the page eases out and back in, the 3D camera flies along with the scroll
+// (cosmos.ts), and the section's [data-arrive] parts rise into place as it lands.
+// `jump:start` / `jump:end` tell the header which link is the target (Header.astro).
 // With reduced motion the browser's own jump is left alone.
 export function startJumps() {
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');

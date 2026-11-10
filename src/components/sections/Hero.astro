@@ -34,8 +34,9 @@ import { site } from '../../data/site';
 	</div>
 
 	<div class="hero__visual" data-depth>
-		<canvas id="blackhole" class="hero__hole" data-emerge aria-hidden="true"></canvas>
-		<span class="hero__scroll" aria-hidden="true">Scroll to explore ↓</span>
+		{/* The black hole is drawn on the page's 3D canvas (scripts/cosmos.ts), aimed at this empty box. */}
+		<div id="blackhole" class="hero__hole" data-emerge aria-hidden="true"></div>
+		<span class="hero__scroll" aria-hidden="true">Scroll to fly ↓</span>
 	</div>
 </section>
 
@@ -82,11 +83,25 @@ import { site } from '../../data/site';
 			{ passive: true },
 		);
 		update();
+
+		// The text leans a little towards the mouse, in 3D.
+		let leaning = false;
+		window.addEventListener('pointermove', (event) => {
+			if (event.pointerType !== 'mouse' || leaning || window.scrollY > hero.offsetHeight) return;
+			leaning = true;
+			requestAnimationFrame(() => {
+				leaning = false;
+				hero.style.setProperty('--mx', (event.clientX / window.innerWidth - 0.5).toFixed(3));
+				hero.style.setProperty('--my', (event.clientY / window.innerHeight - 0.5).toFixed(3));
+			});
+		});
 	}
 </script>
 
 <style>
 	.hero {
+		--mx: 0;
+		--my: 0;
 		position: relative;
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
@@ -103,6 +118,10 @@ import { site } from '../../data/site';
 		display: flex;
 		flex-direction: column;
 		gap: 36px;
+		/* A soft dark patch keeps the text readable over the 3D scene. */
+		background: radial-gradient(ellipse at 45% 50%, oklch(0.08 0.02 250 / 0.72), transparent 70%);
+		transform: perspective(1200px) rotateY(calc(var(--mx) * 7deg)) rotateX(calc(var(--my) * -5deg));
+		transition: transform 1s var(--ease-out);
 	}
 
 	.hero__meta {
@@ -119,7 +138,7 @@ import { site } from '../../data/site';
 	}
 
 	.hero__sep {
-		color: var(--color-amber);
+		color: var(--color-accent);
 		opacity: 0.7;
 	}
 
@@ -185,13 +204,13 @@ import { site } from '../../data/site';
 	}
 
 	.btn--primary {
-		background: var(--color-amber-soft);
-		color: oklch(0.14 0.03 285);
+		background: var(--color-accent-soft);
+		color: oklch(0.14 0.03 250);
 	}
 
 	.btn--primary:hover {
-		background: var(--color-amber);
-		color: oklch(0.14 0.03 285);
+		background: var(--color-accent);
+		color: oklch(0.14 0.03 250);
 	}
 
 	/* One outlined button split into the label and a link per language. */
@@ -229,7 +248,7 @@ import { site } from '../../data/site';
 	.resume__lang:hover,
 	.resume__lang:focus-visible {
 		background: oklch(1 0 0 / 0.06);
-		color: var(--color-amber);
+		color: var(--color-warm);
 	}
 
 	.hero__visual {
@@ -243,10 +262,7 @@ import { site } from '../../data/site';
 
 	.hero__hole {
 		position: absolute;
-		inset: -15%;
-		width: 130%;
-		max-width: none;
-		height: 130%;
+		inset: 0;
 		pointer-events: none;
 	}
 
@@ -297,9 +313,9 @@ import { site } from '../../data/site';
 		--lag: 0.2;
 	}
 
-	/* The hole is deepest. No blur and no scale on it: cosmos.ts measures its canvas on load. */
+	/* No blur, scale or slide on the hole's box: cosmos.ts measures it on load. */
 	.hero__visual {
-		--depth: 0.12;
+		--depth: 0;
 		--delay: 0s;
 		--blur: 0px;
 		--lag: 0.22;

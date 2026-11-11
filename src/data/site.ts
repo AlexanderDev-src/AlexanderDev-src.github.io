@@ -155,6 +155,15 @@ export const projects: Project[] = [
 		description:
 			"Upload a document and get back a similarity percentage plus the matching passages, each linked to its source. It picks random phrases, searches Google for them, scrapes the top results and compares the text.",
 		tags: ["Python", "Flask", "Svelte", "Astro"],
+		photos: [
+			{ src: "/projects/plagiarism-checker/1.png", caption: "Upload" },
+			{ src: "/projects/plagiarism-checker/2.png", caption: "Checking" },
+			{ src: "/projects/plagiarism-checker/3.png", caption: "Similarity score" },
+			{ src: "/projects/plagiarism-checker/4.png", caption: "Matching sources" },
+			{ src: "/projects/plagiarism-checker/5.png", caption: "Search details" },
+			{ src: "/projects/plagiarism-checker/6.png", caption: "Dark mode" },
+		],
+		demo: "https://plagiarism-checker-rose.vercel.app",
 		links: [
 			{
 				label: "Brief (DevProjects)",

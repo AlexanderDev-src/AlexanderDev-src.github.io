@@ -115,7 +115,7 @@ export const resumePdf = (lang: ResumeLang) =>
 			lang,
 			displayTitle: true,
 			info: {
-				Title: `${text.name} — ${text.labels.title}`,
+				Title: `${text.name}; ${text.labels.title}`,
 				Author: text.name,
 				Subject: text.headline,
 			},

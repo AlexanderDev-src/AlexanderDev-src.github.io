@@ -148,6 +148,22 @@ export const projectFilterKeys = (project: Project) =>
 // The order here only decides between projects that finished in the same month.
 export const projects: Project[] = [
 	{
+		name: "Plagiarism Checker",
+		year: "Nov 2026 - Present",
+		kind: "Full-stack web app",
+		topics: ["Full-stack"],
+		description:
+			"Upload a document and get back a similarity percentage plus the matching passages, each linked to its source. It picks random phrases, searches Google for them, scrapes the top results and compares the text.",
+		tags: ["Python", "Flask", "Svelte", "Astro"],
+		links: [
+			{
+				label: "Brief (DevProjects)",
+				href: "https://www.codementor.io/projects/web/plagiarism-checker-website-atx32nf0oa",
+			},
+		],
+		code: "https://github.com/AlexanderDev-src/plagiarism-checker",
+	},
+	{
 		name: "LexiLog",
 		year: "Sep 2026",
 		kind: "Full-stack web app",

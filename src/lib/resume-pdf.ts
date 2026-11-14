@@ -7,7 +7,7 @@ import PDFDocument from "pdfkit";
 import { resume, type ResumeEntry, type ResumeLang } from "../data/resume";
 import { projectEnd, projects, projectTime } from "../data/site";
 
-const PAGE = { size: "A4", marginX: 50, marginY: 42 } as const;
+const PAGE = { size: "A4", marginX: 50, marginY: 36 } as const;
 
 // Body text size in points.
 const BODY = 9.3;
@@ -16,17 +16,15 @@ const COLOR = {
 	ink: "#15151f",
 	text: "#2d2d35",
 	muted: "#62626f",
-	accent: "#6635a3",
-	rule: "#d6d7de",
+	rule: "#8f909a",
 };
 
-// Fonts are tried in order for each character: Manrope and Syne (the site's fonts) for Latin text,
+// Fonts are tried in order for each character: Manrope (the site's font) for Latin text,
 // Noto Sans Thai for Thai, and Noto Sans Math for symbols like ∇.
 const STACK = {
 	regular: ["Manrope-Regular", "NotoSansThai-Regular", "NotoSansMath-Regular"],
 	semibold: ["Manrope-SemiBold", "NotoSansThai-SemiBold", "NotoSansMath-Regular"],
 	bold: ["Manrope-Bold", "NotoSansThai-Bold", "NotoSansMath-Regular"],
-	display: ["Syne-Bold", "NotoSansThai-Bold", "NotoSansMath-Regular"],
 };
 
 type Weight = keyof typeof STACK;
@@ -168,48 +166,40 @@ export const resumePdf = (lang: ResumeLang) =>
 			if (doc.y + height > bottom()) doc.addPage();
 		};
 
-		// Latin titles are small capitals with wide letter spacing. Thai titles stay unspaced, since
-		// spacing pulls the marks off their letters.
+		// A line across the page, then the title under it. Latin titles are capitals with wide letter
+		// spacing. Thai titles stay unspaced, since spacing pulls the marks off their letters.
 		const section = (title: string) => {
 			keep(70);
-			doc.moveDown(0.75);
+			doc.moveDown(0.45);
 			const y = doc.y;
+			doc.moveTo(left, y).lineTo(right, y).lineWidth(0.8).strokeColor(COLOR.rule).stroke();
 			const thai = THAI.test(title);
-			const spacing = thai ? 0 : 1.1;
-			const heading: Part[] = [
-				{ text: title.toUpperCase(), weight: "bold", size: thai ? 9.5 : 8.5, color: COLOR.accent },
-			];
-			write(heading, { x: left, y, characterSpacing: spacing });
-			const end = left + measure(heading) + [...title].length * spacing + 8;
-			doc
-				.moveTo(end, y + 5.5)
-				.lineTo(right, y + 5.5)
-				.lineWidth(0.6)
-				.strokeColor(COLOR.rule)
-				.stroke();
-			doc.y = Math.max(doc.y, y + 12) + 4;
+			write([{ text: title.toUpperCase(), weight: "bold", size: thai ? 10 : 9, color: COLOR.ink }], {
+				x: left,
+				y: y + 9,
+				characterSpacing: thai ? 0 : 1.1,
+			});
+			doc.y += 3;
 		};
 
-		// A title and subtitle on the left, the date on the right.
+		// The title on the left and the date on the right, both bold, with the subtitle on the next line.
 		const entryHeader = (title: string, subtitle: string, when: string) => {
 			keep(40);
 			const y = doc.y;
-			const date: Part[] = [{ text: when, size: 8.8, color: COLOR.muted }];
+			const date: Part[] = [{ text: when, weight: "semibold", size: 9.2, color: COLOR.ink }];
 			const dateWidth = when ? measure(date) : 0;
 			if (when) write(date, { x: right - dateWidth, y: y + 1, width: dateWidth + 2 });
 			const dateBottom = doc.y;
-			write(
-				[
-					{ text: title, weight: "semibold", size: 10.2, color: COLOR.ink },
-					...(subtitle ? [{ text: `  ${subtitle}`, size: 9.2, color: COLOR.muted }] : []),
-				],
-				{ x: left, y, width: width - dateWidth - 16 },
-			);
-			doc.y = Math.max(doc.y, dateBottom) + 1.5;
+			write([{ text: title, weight: "bold", size: 10.2, color: COLOR.ink }], { x: left, y, width: width - dateWidth - 16 });
+			doc.y = Math.max(doc.y, dateBottom);
+			if (subtitle) write([{ text: subtitle, weight: "semibold", size: 9.2 }]);
+			doc.y += 1.5;
 		};
 
 		const bullets = (points: string[]) => {
 			for (const point of points) {
+				// A point that crossed the page end would leave its dot behind on the old page.
+				keep(32);
 				const y = doc.y;
 				write([{ text: "•", color: COLOR.muted }], { x: left + 2, y });
 				write([{ text: point }], { x: left + 12, y, width: width - 12 });
@@ -224,27 +214,46 @@ export const resumePdf = (lang: ResumeLang) =>
 			}
 		};
 
-		// Header: the name and headline on the left, the location and links stacked on the right.
+		// Header: the name, then the headline, then the location and links on a line under them.
+		// The name shrinks to stay on one line.
+		const name: Part = { text: text.name, weight: "bold", size: 26, color: COLOR.ink };
+		name.size = Math.min(26, (26 * width) / measure([name]));
+		write([name], { x: left, y: PAGE.marginY });
+		if (text.aka) write([{ text: `${text.labels.aka} ${text.aka}`, size: 9.5, color: COLOR.muted }]);
+		write([{ text: text.headline, weight: "semibold", size: 10.5, color: COLOR.ink }]);
+		doc.moveDown(0.3);
+		const dot: Part = { text: "   ·   ", size: 8.8, color: COLOR.muted };
 		const contact: Part[] = [
-			...(text.location ? [{ text: text.location, size: 8.8, color: COLOR.muted }] : []),
+			...(text.location ? [{ text: text.location, size: 8.8 }] : []),
 			...resume.links.filter(Boolean).map((link) => ({ text: withoutProtocol(link), link, size: 8.8 })),
 		];
-		const contactWidth = Math.max(0, ...contact.map((part) => measure([part])));
-		doc.y = PAGE.marginY + 1;
+		// A link moves to the next line whole, so it never breaks in the middle.
+		let line: Part[] = [];
 		for (const part of contact) {
-			const partWidth = measure([part]);
-			write([part], { x: right - partWidth, y: doc.y, width: partWidth + 2 });
+			if (line.length && measure([...line, dot, part]) > width) {
+				write(line);
+				line = [];
+			}
+			line.push(...(line.length ? [dot] : []), part);
 		}
-		const contactBottom = doc.y;
-		// The name shrinks to stay on one line beside the links.
-		const nameWidth = width - contactWidth - 24;
-		const name: Part = { text: text.name, weight: "display", size: 24, color: COLOR.ink };
-		name.size = Math.min(24, (24 * nameWidth) / measure([name]));
-		write([name], { x: left, y: PAGE.marginY, width: nameWidth });
-		if (text.aka) write([{ text: `${text.labels.aka} ${text.aka}`, size: 9.5, color: COLOR.muted }], { width: nameWidth });
-		doc.moveDown(0.25);
-		write([{ text: text.headline, weight: "semibold", size: 10.5, color: COLOR.accent }], { width: nameWidth });
-		doc.y = Math.max(doc.y, contactBottom);
+		if (line.length) write(line);
+
+		// Core skills come first, one column per list in resume.coreSkills.
+		if (resume.coreSkills.length) {
+			section(text.labels.skills);
+			const columns = resume.coreSkills.length;
+			const top = doc.y;
+			resume.coreSkills.forEach((column, c) =>
+				column.forEach((skill, r) =>
+					write([{ text: skill, weight: "semibold", size: 9.8, color: COLOR.ink }], {
+						x: left + (c * width) / columns,
+						y: top + r * 15,
+						width: width / columns - 8,
+					}),
+				),
+			);
+			doc.y = top + Math.max(...resume.coreSkills.map((column) => column.length)) * 15;
+		}
 
 		// Summary
 		if (text.summary) {
@@ -272,31 +281,14 @@ export const resumePdf = (lang: ResumeLang) =>
 				const own = text.projects[project.name] ?? {};
 				const link = project.code ?? project.demo;
 				entryHeader(project.name, own.kind ?? project.kind, formatDate(project.year, text.dateLocale, text.labels.present));
-				write([{ text: own.description ?? project.description }]);
+				if (own.points?.length) bullets(own.points);
+				else write([{ text: own.description ?? project.description }]);
 				doc.moveDown(0.1);
 				write([
 					{ text: project.tags.join("  ·  "), size: 8.5, color: COLOR.muted },
-					...(link ? [{ text: `     ${withoutProtocol(link)}`, size: 8.5, color: COLOR.accent, link }] : []),
+					...(link ? [{ text: `     ${withoutProtocol(link)}`, size: 8.5, color: COLOR.ink, link }] : []),
 				]);
-				doc.moveDown(0.6);
-			}
-		}
-
-		// Skills: the group name on the left, the skills on the right.
-		if (resume.skills.length) {
-			section(text.labels.skills);
-			const labelWidth = 148;
-			for (const { group, items } of resume.skills) {
-				keep(24);
-				const y = doc.y;
-				write([{ text: text.skillGroups[group] ?? group, weight: "semibold", size: 9.2, color: COLOR.ink }], {
-					x: left,
-					y,
-					width: labelWidth - 10,
-				});
-				const labelBottom = doc.y;
-				write([{ text: items.join(", "), size: 9.2 }], { x: left + labelWidth, y, width: width - labelWidth });
-				doc.y = Math.max(doc.y, labelBottom) + 2;
+				doc.moveDown(0.45);
 			}
 		}
 

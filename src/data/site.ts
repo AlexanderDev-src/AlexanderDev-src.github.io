@@ -149,7 +149,7 @@ export const projectFilterKeys = (project: Project) =>
 export const projects: Project[] = [
 	{
 		name: "Plagiarism Checker",
-		year: "Nov 2026 - Present",
+		year: "10 Nov 2026 - 11 Nov 2026",
 		kind: "Full-stack web app",
 		topics: ["Full-stack"],
 		description:
@@ -171,6 +171,22 @@ export const projects: Project[] = [
 			},
 		],
 		code: "https://github.com/AlexanderDev-src/plagiarism-checker",
+	},
+	{
+		name: "Meridian",
+		year: "22 Nov 2026 - 24 Nov 2026",
+		kind: "Desktop app",
+		topics: ["Full-stack"],
+		description:
+			"A desktop focus timer where each session is a flight. Pick a departure and a duration, board a real route that takes about that long, and watch the plane cross the globe while you work. It keeps a logbook of your flights, with stats, streaks and tags, plus sounds and alerts for landing.",
+		tags: ["Tauri", "Rust", "TypeScript", "Tailwind CSS", "SQLite"],
+		photos: [
+			{ src: "/projects/meridian/1.png", caption: "Pick a flight" },
+			{ src: "/projects/meridian/2.png", caption: "Boarding pass" },
+			{ src: "/projects/meridian/3.png", caption: "Flight data" },
+			{ src: "/projects/meridian/4.png", caption: "Sound & alerts" },
+		],
+		code: "https://github.com/AlexanderDev-src/meridian",
 	},
 	{
 		name: "LexiLog",

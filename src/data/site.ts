@@ -14,6 +14,11 @@ export const site = {
 		en: "/Alexander-Sanford-Resume.pdf",
 		th: "/Alexander-Sanford-Resume-TH.pdf",
 	},
+	// CV PDFs, same idea as the résumé but with every project and the full skill list.
+	cv: {
+		en: "/Alexander-Sanford-CV.pdf",
+		th: "/Alexander-Sanford-CV-TH.pdf",
+	},
 	// IANA time zone for the "Local time" clock in the hero. Use undefined to show the visitor's time.
 	timeZone: "Asia/Bangkok" as string | undefined,
 	intro:
@@ -36,6 +41,8 @@ export const socials = [
 	{ label: "Kaggle", href: "https://kaggle.com/" },
 	{ label: "Résumé (PDF) (Still on Update)", href: site.resume.en },
 	{ label: "Résumé ภาษาไทย (PDF)", href: site.resume.th },
+	{ label: "CV (PDF)", href: site.cv.en },
+	{ label: "CV ภาษาไทย (PDF)", href: site.cv.th },
 ];
 
 export const about = {

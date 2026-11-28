@@ -45,6 +45,21 @@ export interface ResumeText {
 	};
 }
 
+// The CV is the long version of the résumé: same header, summary, education and experience, but it
+// lists every project and the whole skill list, and has room for extra sections.
+export type DocKind = "resume" | "cv";
+
+export interface Cv {
+	// Projects to list, by name in site.ts. Leave it empty to list all of them, newest first.
+	projects: string[];
+	// Shown in the browser tab and the PDF's details, and as the title of the skills section.
+	title: Record<ResumeLang, string>;
+	skills: Record<ResumeLang, string>;
+	// Extra sections after the projects, like activities, awards or certifications. A section with
+	// no entries is left out. Each entry is the same shape as an education entry.
+	extra: Record<ResumeLang, { title: string; entries: ResumeEntry[] }[]>;
+}
+
 export interface Resume {
 	// Links under the name, in this order. They print without "https://", so they still read on paper.
 	links: string[];
@@ -58,6 +73,22 @@ export interface Resume {
 
 const social = (label: string) =>
 	socials.find((link) => link.label === label)?.href ?? "";
+
+export const cv: Cv = {
+	projects: [],
+	title: { en: "Curriculum Vitae", th: "ประวัติย่อ (CV)" },
+	skills: { en: "Skills", th: "ทักษะ" },
+	extra: {
+		en: [
+			{ title: "Activities & Awards", entries: [] },
+			{ title: "Certifications", entries: [] },
+		],
+		th: [
+			{ title: "กิจกรรมและรางวัล", entries: [] },
+			{ title: "ใบรับรอง", entries: [] },
+		],
+	},
+};
 
 export const resume: Resume = {
 	links: [
@@ -104,6 +135,34 @@ export const resume: Resume = {
 						"Built a timed writing editor with drafts, feedback, and mistake tracking.",
 					],
 				},
+				Meridian: {
+					points: [
+						"Developed a desktop focus timer with Tauri, Rust, and TypeScript, where each work session is a flight on a real route that lasts about as long as the session.",
+						"Built a live globe view that shows the plane crossing the map, with boarding pass, flight data, and sound alerts for landing.",
+						"Stored a logbook of past flights in SQLite, with stats, streaks, and tags.",
+					],
+				},
+				"Plagiarism Checker": {
+					points: [
+						"Developed a full-stack web application that takes an uploaded document and returns a similarity percentage and the matching passages, each linked to its source.",
+						"Implemented the checking pipeline in Python and Flask: it picks random phrases, searches Google for them, scrapes the top results, and compares the text.",
+						"Built the interface with Svelte and Astro, including a dark mode, and deployed it on Vercel.",
+					],
+				},
+				"Task API": {
+					points: [
+						"Built a Task/Todo REST API, first in Rust with ntex to learn the language, then rebuilt it in TypeScript on Bun and Elysia with Clean Architecture, on PostgreSQL.",
+						"Implemented create, list, update, and delete with input validation, status filters, due dates with a date-range filter, paging, and one consistent JSON error shape.",
+						"Wrote a small React + TypeScript client and an 86-check acceptance script.",
+					],
+				},
+				"I BUILD CPU": {
+					points: [
+						"Built an online store for computer parts with a team of first-year students, using Spring Boot and Clean Architecture.",
+						"Implemented JWT sign-in, products and categories, orders, credit top-ups, reviews, image uploads to MinIO, and an admin dashboard.",
+						"Coordinated the team and implemented the use cases; spent much of the time teaching teammates, since the project was a big step up for first-years.",
+					],
+				},
 			},
 			labels: {
 				title: "Résumé",
@@ -141,10 +200,29 @@ export const resume: Resume = {
 						"สร้างหน้าเขียนเรียงความแบบจับเวลา พร้อมฉบับร่าง ฟีดแบ็ก และการติดตามข้อผิดพลาด",
 					],
 				},
+				Meridian: {
+					kind: "แอปเดสก์ท็อป",
+					points: [
+						"พัฒนาแอปจับเวลาโฟกัสบนเดสก์ท็อปด้วย Tauri, Rust และ TypeScript โดยแต่ละรอบการทำงานคือหนึ่งเที่ยวบินบนเส้นทางจริงที่ใช้เวลาใกล้เคียงกับรอบนั้น",
+						"สร้างหน้าแผนที่โลกที่แสดงเครื่องบินบินข้ามแผนที่ พร้อมบอร์ดดิงพาส ข้อมูลเที่ยวบิน และเสียงแจ้งเตือนเมื่อลงจอด",
+						"เก็บบันทึกเที่ยวบินในอดีตด้วย SQLite พร้อมสถิติ สตรีค และแท็ก",
+					],
+				},
+				"Plagiarism Checker": {
+					kind: "เว็บแอป Full-stack",
+					points: [
+						"พัฒนาเว็บแอปแบบ Full-stack ที่รับเอกสารแล้วแสดงเปอร์เซ็นต์ความคล้าย พร้อมข้อความที่ตรงกันและลิงก์ไปยังแหล่งที่มา",
+						"พัฒนาขั้นตอนตรวจสอบด้วย Python และ Flask: สุ่มวลี ค้นหาบน Google ดึงข้อมูลจากผลลัพธ์อันดับต้น ๆ แล้วเปรียบเทียบข้อความ",
+						"สร้างหน้าจอด้วย Svelte และ Astro รองรับโหมดมืด และนำขึ้นใช้งานบน Vercel",
+					],
+				},
 				"I BUILD CPU": {
 					kind: "โปรเจกต์กลุ่ม · ปี 1",
-					description:
-						"ร้านค้าออนไลน์สำหรับชิ้นส่วนคอมพิวเตอร์ พัฒนาโดยทีมนักศึกษาปี 1 ด้วย Spring Boot และ Clean Architecture: เข้าสู่ระบบด้วย JWT, สินค้าและหมวดหมู่, คำสั่งซื้อ, เติมเครดิต, รีวิว, อัปโหลดรูปภาพไปยัง MinIO และแดชบอร์ดผู้ดูแลระบบ รับหน้าที่ประสานงานทีมและพัฒนา use case ต่าง ๆ แต่เวลาส่วนใหญ่ใช้ไปกับการสอนเพื่อนร่วมทีม เพราะโปรเจกต์นี้ยากกว่าระดับปี 1 ไปมาก",
+					points: [
+						"พัฒนาร้านค้าออนไลน์สำหรับชิ้นส่วนคอมพิวเตอร์ร่วมกับทีมนักศึกษาปี 1 ด้วย Spring Boot และ Clean Architecture",
+						"พัฒนาระบบเข้าสู่ระบบด้วย JWT, สินค้าและหมวดหมู่, คำสั่งซื้อ, เติมเครดิต, รีวิว, อัปโหลดรูปภาพไปยัง MinIO และแดชบอร์ดผู้ดูแลระบบ",
+						"รับหน้าที่ประสานงานทีมและพัฒนา use case ต่าง ๆ แต่เวลาส่วนใหญ่ใช้ไปกับการสอนเพื่อนร่วมทีม เพราะโปรเจกต์นี้ยากกว่าระดับปี 1 ไปมาก",
+					],
 				},
 				Nabla: {
 					points: [
@@ -154,8 +232,11 @@ export const resume: Resume = {
 				},
 				"Task API": {
 					kind: "REST API · Rust → TypeScript",
-					description:
-						"REST API สำหรับจัดการงาน (Task/Todo) ที่เดิมสร้างขึ้นเพื่อเรียนรู้ Rust ด้วย ntex และปัจจุบันเขียนใหม่ด้วย TypeScript บน Bun และ Elysia ตามแนวทาง Clean Architecture โดยยังใช้ PostgreSQL: สร้าง แสดงรายการ แก้ไข และลบงาน พร้อมตรวจสอบข้อมูล กรองตามสถานะ กำหนดวันครบกำหนดและกรองตามช่วงวันที่ แบ่งหน้า และใช้รูปแบบ JSON error เดียวกันทั้งหมด มีไคลเอนต์ขนาดเล็กด้วย React + TypeScript และสคริปต์ acceptance test 86 รายการ",
+					points: [
+						"พัฒนา REST API สำหรับจัดการงาน (Task/Todo) เริ่มด้วย Rust และ ntex เพื่อเรียนรู้ภาษา จากนั้นเขียนใหม่ด้วย TypeScript บน Bun และ Elysia ตามแนวทาง Clean Architecture โดยยังใช้ PostgreSQL",
+						"ทำระบบสร้าง แสดงรายการ แก้ไข และลบงาน พร้อมตรวจสอบข้อมูล กรองตามสถานะ กำหนดวันครบกำหนดและกรองตามช่วงวันที่ แบ่งหน้า และใช้รูปแบบ JSON error เดียวกันทั้งหมด",
+						"สร้างไคลเอนต์ขนาดเล็กด้วย React + TypeScript และสคริปต์ acceptance test 86 รายการ",
+					],
 				},
 				"Social Media & Mental Health": {
 					kind: "Data Science · ปี 2",

@@ -17,6 +17,8 @@ export function startTilt() {
 		const rect = el.getBoundingClientRect();
 		const x = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width)) - 0.5;
 		const y = Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height)) - 0.5;
+		el.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+		el.style.setProperty('--my', `${event.clientY - rect.top}px`);
 		const max = Number(el.dataset.tilt) || 8;
 		el.style.transition = 'transform 0.14s ease-out';
 		el.style.transform = `perspective(1000px) rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max * 1.2).toFixed(2)}deg) translateZ(8px)`;

@@ -4,8 +4,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as fontkit from "fontkit";
 import PDFDocument from "pdfkit";
-import { resume, type ResumeEntry, type ResumeLang } from "../data/resume";
-import { projectEnd, projects, projectTime } from "../data/site";
+import { cv, resume, type DocKind, type ResumeEntry, type ResumeLang } from "../data/resume";
+import { projectEnd, projects, projectTime, skills } from "../data/site";
 
 const PAGE = { size: "A4", marginX: 50, marginY: 36 } as const;
 
@@ -104,7 +104,7 @@ const formatDate = (date: string, locale: string | undefined, present: string) =
 		.join("");
 };
 
-export const resumePdf = (lang: ResumeLang) =>
+export const resumePdf = (lang: ResumeLang, kind: DocKind = "resume") =>
 	new Promise<Buffer>((resolve, reject) => {
 		const text = resume.text[lang];
 		const doc = new PDFDocument({
@@ -113,7 +113,7 @@ export const resumePdf = (lang: ResumeLang) =>
 			lang,
 			displayTitle: true,
 			info: {
-				Title: `${text.name}; ${text.labels.title}`,
+				Title: `${text.name}; ${kind === "cv" ? cv.title[lang] : text.labels.title}`,
 				Author: text.name,
 				Subject: text.headline,
 			},
@@ -238,8 +238,20 @@ export const resumePdf = (lang: ResumeLang) =>
 		}
 		if (line.length) write(line);
 
+		// The CV lists every skill group from the site, one line per group.
+		if (kind === "cv") {
+			section(cv.skills[lang]);
+			for (const { group, items } of skills) {
+				keep(24);
+				write([
+					{ text: `${group}:  `, weight: "bold", color: COLOR.ink },
+					{ text: items.map((item) => item.name).join(", ") },
+				]);
+				doc.y += 1.5;
+			}
+		}
 		// Core skills come first, one column per list in resume.coreSkills.
-		if (resume.coreSkills.length) {
+		else if (resume.coreSkills.length) {
 			section(text.labels.skills);
 			const columns = resume.coreSkills.length;
 			const top = doc.y;
@@ -271,9 +283,10 @@ export const resumePdf = (lang: ResumeLang) =>
 			entries(text.experience);
 		}
 
-		// Projects: the names in resume.projects, or every project newest first.
-		const chosen = resume.projects.length
-			? resume.projects.flatMap((name) => projects.filter((project) => project.name === name))
+		// Projects: the names in resume.projects (cv.projects for the CV), or every project newest first.
+		const names = kind === "cv" ? cv.projects : resume.projects;
+		const chosen = names.length
+			? names.flatMap((name) => projects.filter((project) => project.name === name))
 			: [...projects].sort((a, b) => projectEnd(b.year) - projectEnd(a.year));
 		if (chosen.length) {
 			section(text.labels.projects);
@@ -289,6 +302,14 @@ export const resumePdf = (lang: ResumeLang) =>
 					...(link ? [{ text: `     ${withoutProtocol(link)}`, size: 8.5, color: COLOR.ink, link }] : []),
 				]);
 				doc.moveDown(0.45);
+			}
+		}
+
+		if (kind === "cv") {
+			for (const { title, entries: items } of cv.extra[lang]) {
+				if (!items.length) continue;
+				section(title);
+				entries(items);
 			}
 		}
 

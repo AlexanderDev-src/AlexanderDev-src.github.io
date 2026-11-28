@@ -200,13 +200,13 @@ const filters = [filterGroup(projectFilters.topics), filterGroup(projectFilters.
 	}
 
 	.projects__filter:hover {
-		border-color: oklch(0.88 0.045 240 / 0.6);
+		border-color: color-mix(in oklch, var(--color-accent) 60%, transparent);
 		color: var(--color-text);
 	}
 
 	.projects__filter[aria-pressed='true'] {
-		border-color: oklch(0.88 0.045 240 / 0.6);
-		background: oklch(0.88 0.045 240 / 0.12);
+		border-color: color-mix(in oklch, var(--color-accent) 60%, transparent);
+		background: color-mix(in oklch, var(--color-accent) 12%, transparent);
 		color: var(--color-accent-soft);
 	}
 
@@ -270,7 +270,7 @@ const filters = [filterGroup(projectFilters.topics), filterGroup(projectFilters.
 		align-items: center;
 		gap: 10px;
 		padding: 12px 22px;
-		border: 1px solid oklch(0.88 0.045 240 / 0.6);
+		border: 1px solid color-mix(in oklch, var(--color-accent) 60%, transparent);
 		border-radius: 999px;
 		background: oklch(0.12 0.02 250 / 0.85);
 		backdrop-filter: blur(12px);
@@ -287,7 +287,7 @@ const filters = [filterGroup(projectFilters.topics), filterGroup(projectFilters.
 	}
 
 	.projects__more-button:hover {
-		background: oklch(0.88 0.045 240 / 0.16);
+		background: color-mix(in oklch, var(--color-accent) 16%, transparent);
 		color: var(--color-text);
 	}
 

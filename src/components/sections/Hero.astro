@@ -30,6 +30,11 @@ import { site } from '../../data/site';
 				<a class="resume__lang" href={site.resume.en} target="_blank" rel="noopener" hreflang="en">English <span class="mono" aria-hidden="true">↗</span></a>
 				<a class="resume__lang" href={site.resume.th} target="_blank" rel="noopener" hreflang="th" lang="th">ไทย <span class="mono" aria-hidden="true">↗</span></a>
 			</div>
+			<div class="resume" role="group" aria-label="CV">
+				<span class="resume__label">CV</span>
+				<a class="resume__lang" href={site.cv.en} target="_blank" rel="noopener" hreflang="en">English <span class="mono" aria-hidden="true">↗</span></a>
+				<a class="resume__lang" href={site.cv.th} target="_blank" rel="noopener" hreflang="th" lang="th">ไทย <span class="mono" aria-hidden="true">↗</span></a>
+			</div>
 		</div>
 	</div>
 
@@ -204,13 +209,13 @@ import { site } from '../../data/site';
 	}
 
 	.btn--primary {
-		background: var(--color-accent-soft);
-		color: oklch(0.14 0.03 250);
+		background: var(--color-warm);
+		color: oklch(0.16 0.03 60);
 	}
 
 	.btn--primary:hover {
-		background: var(--color-accent);
-		color: oklch(0.14 0.03 250);
+		background: var(--color-warm-hot);
+		color: oklch(0.16 0.03 60);
 	}
 
 	/* One outlined button split into the label and a link per language. */

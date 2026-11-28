@@ -85,12 +85,12 @@ import { site, about, timeline } from '../../data/site';
 
 	.about__ring--inner {
 		inset: -14px;
-		border: 1px solid oklch(0.7 0.1 250 / 0.45);
+		border: 1px solid color-mix(in oklch, var(--color-accent) 45%, transparent);
 	}
 
 	.about__ring--outer {
 		inset: -30px;
-		border: 1px dashed oklch(0.88 0.045 240 / 0.25);
+		border: 1px dashed color-mix(in oklch, var(--color-accent) 25%, transparent);
 	}
 
 	.about__satellite {

@@ -145,13 +145,14 @@ const welcome = import.meta.env.BASE_URL;
 	}
 
 	.header__mark {
+		position: relative;
 		width: 22px;
 		height: 22px;
 		border-radius: 50%;
 		background: oklch(0.06 0.01 250);
 		box-shadow:
 			0 0 0 2px var(--color-accent),
-			0 0 16px 2px oklch(0.7 0.1 250 / 0.8);
+			0 0 16px 2px color-mix(in oklch, var(--color-accent) 80%, transparent);
 	}
 
 	.header__links {
@@ -218,5 +219,55 @@ const welcome = import.meta.env.BASE_URL;
 		margin-top: calc((1.5em - 7px) / 2);
 		border-radius: 50%;
 		background: var(--color-status);
+	}
+
+	/* A small ember planet circles the mark. */
+	.header__mark::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 5px;
+		height: 5px;
+		margin: -2.5px;
+		border-radius: 50%;
+		background: var(--color-warm);
+		box-shadow: 0 0 8px 1px var(--color-warm);
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.header__mark::after {
+			animation: orbit 7s linear infinite;
+		}
+	}
+
+	@keyframes orbit {
+		from {
+			transform: rotate(0deg) translateX(18px) scaleY(0.6);
+		}
+		to {
+			transform: rotate(360deg) translateX(18px) scaleY(0.6);
+		}
+	}
+
+	/* How far the flight has gone: a line along the header's lower edge. */
+	@supports (animation-timeline: scroll()) {
+		.header::after {
+			content: '';
+			position: absolute;
+			inset: auto 0 -1px;
+			height: 2px;
+			background: linear-gradient(90deg, var(--color-warm), var(--color-accent));
+			transform-origin: 0 50%;
+			transform: scaleX(0);
+			animation: flight linear both;
+			animation-timeline: scroll(root);
+		}
+
+		@keyframes flight {
+			to {
+				transform: scaleX(1);
+			}
+		}
 	}
 </style>

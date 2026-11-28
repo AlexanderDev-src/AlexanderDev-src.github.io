@@ -1,6 +1,15 @@
-/* Design tokens: change these to restyle the whole site. */
+/* Design tokens: change these to restyle the whole site.
+   Colour plan (60 / 30 / 10): indigo void is the ground, nebula blue carries the interface, and
+   ember, the complement of that blue and the hue of the black hole's own disk, is kept for the
+   few things that should pull the eye: the main button, hovers, the name's light sweep. */
+@property --color-accent {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: oklch(0.82 0.1 245);
+}
+
 :root {
-	--color-bg: oklch(0.1 0.02 250);
+	--color-bg: oklch(0.1 0.025 262);
 	--color-horizon: oklch(0.03 0.005 250);
 	--color-text: oklch(0.95 0.012 85);
 	--color-text-soft: oklch(0.88 0.015 250);
@@ -8,21 +17,24 @@
 	--color-muted-2: oklch(0.8 0.03 250);
 	--color-faint: oklch(0.76 0.03 250);
 
-	/* Moonlit: a pale blue accent, a warm hover, a teal status dot. */
-	--color-accent: oklch(0.88 0.045 240);
-	--color-accent-soft: oklch(0.93 0.03 240);
-	--color-warm: oklch(0.9 0.07 95);
+	/* Accent: the current section's colour (zones below). Soft is the same hue, paler. */
+	--color-accent: oklch(0.82 0.1 245);
+	--color-accent-soft: oklch(from var(--color-accent) calc(l + 0.08) calc(c * 0.55) h);
+	--color-warm: oklch(0.82 0.15 65);
+	--color-warm-hot: oklch(0.89 0.14 72);
 	--color-status: oklch(0.8 0.1 190);
 
 	--hairline: oklch(1 0 0 / 0.08);
 	--hairline-soft: oklch(1 0 0 / 0.06);
 	--hairline-strong: oklch(1 0 0 / 0.12);
 
+	/* Ember flares at the edge, passes through pale light, cools to blue, then teal. */
 	--gradient-text: linear-gradient(
 		95deg,
-		oklch(0.9 0.07 95),
-		oklch(0.88 0.045 240) 50%,
-		oklch(0.8 0.1 190)
+		var(--color-warm),
+		oklch(0.94 0.05 90) 28%,
+		oklch(0.84 0.09 245) 62%,
+		var(--color-status)
 	);
 
 	--font-display: 'Syne', sans-serif;
@@ -188,4 +200,64 @@ p {
 /* Leans towards the mouse in 3D (scripts/tilt.ts). */
 [data-tilt] {
 	transition: transform 0.7s var(--ease-out);
+}
+
+/* Zones: the accent drifts round the cool side of the wheel as the camera flies on, then lands on
+   ember at the galaxy's core. zone.ts sets data-zone on <html>. */
+:root {
+	transition: --color-accent 1.2s var(--ease-out);
+}
+
+:root[data-zone='work'] {
+	--color-accent: oklch(0.8 0.12 265);
+}
+
+:root[data-zone='skills'] {
+	--color-accent: oklch(0.82 0.1 195);
+}
+
+:root[data-zone='about'] {
+	--color-accent: oklch(0.83 0.09 230);
+}
+
+:root[data-zone='contact'] {
+	--color-accent: var(--color-warm);
+}
+
+/* Light that sweeps across the name and the closing line, like the disk turning. */
+.gradient-text {
+	background-size: 220% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.gradient-text {
+		animation: sweep 9s ease-in-out infinite alternate;
+	}
+}
+
+@keyframes sweep {
+	to {
+		background-position: 100% 0;
+	}
+}
+
+/* A card is lit from where the cursor is (tilt.ts sets --mx, --my). */
+[data-tilt]::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	border-radius: inherit;
+	pointer-events: none;
+	background: radial-gradient(
+		280px circle at var(--mx, 50%) var(--my, 0%),
+		color-mix(in oklch, var(--color-warm) 14%, transparent),
+		transparent 70%
+	);
+	opacity: 0;
+	transition: opacity 0.4s;
+}
+
+[data-tilt]:hover::before {
+	opacity: 1;
 }
